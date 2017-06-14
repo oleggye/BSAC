@@ -5,8 +5,9 @@
  */
 package supportClasses;
 
-import hibernateFiles.entity.Record;
 import java.util.List;
+
+import by.bsac.timetable.hibernateFiles.entity.Record;
 import tableClasses.ArrayPosition;
 import tableClasses.MyMultiSpanCellTable;
 import timetable.view.MainForm;

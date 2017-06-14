@@ -1,7 +1,7 @@
 package tableClasses;
 
 import by.bsac.component.multiSpanCellTable.AttributiveCellTableModel;
-import hibernateFiles.entity.Record;
+import by.bsac.timetable.hibernateFiles.entity.Record;
 
 public class MyCellTableModel extends AttributiveCellTableModel {
 
@@ -17,5 +17,4 @@ public class MyCellTableModel extends AttributiveCellTableModel {
 	public Class getColumnClass(int columnIndex) {
 		return columnTypes[columnIndex];
 	}
-
 }

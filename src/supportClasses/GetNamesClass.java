@@ -1,20 +1,34 @@
 package supportClasses;
 
-import hibernateFiles.entity.Chair;
-import hibernateFiles.entity.Classroom;
-import hibernateFiles.entity.Faculty;
-import hibernateFiles.entity.Group;
-import hibernateFiles.entity.Lecturer;
-import hibernateFiles.entity.Subject;
 import java.util.List;
 import java.util.Vector;
 
+import by.bsac.timetable.hibernateFiles.entity.Chair;
+import by.bsac.timetable.hibernateFiles.entity.Classroom;
+import by.bsac.timetable.hibernateFiles.entity.Faculty;
+import by.bsac.timetable.hibernateFiles.entity.Group;
+import by.bsac.timetable.hibernateFiles.entity.Lecturer;
+import by.bsac.timetable.hibernateFiles.entity.Subject;
+import components.IName;
+
 public class GetNamesClass {
 
-	public final static <E> Vector listToVector(List<E> list) {
+	public final static <E> Vector<E> listToVector(List<E> list) {
 		Vector<E> vec = new Vector<>();
 		for (E f : list) {
 			vec.add(f);
+		}
+		return vec;
+	}
+
+	public final static Vector<Vector<IName>> listToNameVector(List<? extends IName> collection) {
+
+		Vector<Vector<IName>> vec = new Vector<>();
+
+		for (IName e : collection) {
+			Vector<IName> element = new Vector<>();
+			element.add(e);
+			vec.add(element);
 		}
 		return vec;
 	}

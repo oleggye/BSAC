@@ -265,12 +265,12 @@ public final class DateUtil {
 		return mondayDate.plusDays(weekDay - 1);
 	}
 
-	public static byte getWeekNumber(Date date) {
+	public static byte getWeekNumber(java.util.Date date) {
 		LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		return (byte) whatWeekNumberIs(localDate);
 	}
 
-	public static byte getWeekDay(Date date) {
+	public static byte getWeekDay(java.util.Date date) {
 		LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		return (byte) localDate.getDayOfWeek().getValue();
 	}

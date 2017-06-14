@@ -14,18 +14,17 @@ import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
+import by.bsac.timetable.hibernateFiles.HibernateUtil;
+import by.bsac.timetable.hibernateFiles.entity.Chair;
+import by.bsac.timetable.hibernateFiles.entity.Classroom;
+import by.bsac.timetable.hibernateFiles.entity.Group;
+import by.bsac.timetable.hibernateFiles.entity.Lecturer;
+import by.bsac.timetable.hibernateFiles.entity.Record;
+import by.bsac.timetable.hibernateFiles.entity.Subject;
+import by.bsac.timetable.service.exception.ServiceException;
+import by.bsac.timetable.service.factory.IServiceFactory;
+import by.bsac.timetable.service.factory.ServiceFactoryProvider;
 import components.MyComboBoxModel;
-import hibernateFiles.HibernateUtil;
-import hibernateFiles.entity.Chair;
-import hibernateFiles.entity.Classroom;
-import hibernateFiles.entity.Group;
-import hibernateFiles.entity.Lecturer;
-import hibernateFiles.entity.Record;
-import hibernateFiles.entity.Subject;
-import service.exception.ServiceException;
-import service.factory.IServiceFactory;
-import service.factory.ServiceFactoryName;
-import service.factory.ServiceFactoryProvider;
 import timetable.util.ActionMode;
 import timetable.util.Checker;
 import timetable.util.LessonFor;
@@ -57,16 +56,20 @@ public class UpdateOrCancelInitializer {
 
 		HibernateUtil.getSession();
 
-		Record updateRecord, cancelRecord;
+		Record initialRecord, updateRecord, cancelRecord;
 		try {
 			HibernateUtil.getSession();
+
+			initialRecord = record;
 			updateRecord = (Record) record.clone();
 			cancelRecord = (Record) record.clone();
-			HibernateUtil.closeSession();
+
 		} catch (CloneNotSupportedException e) {
+			HibernateUtil.closeSession();
 			throw new RuntimeException(e);
 		}
 		form.setParent(parent);
+		form.setInitialRecord(initialRecord);
 		form.setUpdateRecord(updateRecord);
 		form.setCancelRecord(cancelRecord);
 
@@ -82,7 +85,7 @@ public class UpdateOrCancelInitializer {
 		form.setLessonFor(LessonFor.subjectForToLessonFor(record.getSubjectFor()));
 		form.setLessonType(LessonType.subjectTypeToLessonType(record.getSubjectType()));
 
-		form.setAction(ActionMode.Update);
+		form.setAction(ActionMode.Update_Record);
 
 		Set<WeekNumber> updateWeekSet = new HashSet<>();
 		Set<WeekNumber> cancelWeekSet = new HashSet<>();
@@ -126,12 +129,10 @@ public class UpdateOrCancelInitializer {
 		try {
 			IServiceFactory factory = ServiceFactoryProvider.getInstance().getServiceFactory();
 
-			List<Chair> chairsList = factory.getChairService().getAllChairs();
+			List<Chair> chairsList = factory.getChairService().getAllChair();
 
 			DefaultComboBoxModel<Chair> model = new MyComboBoxModel<>(chairsList);
 			chairComboBox.setModel(model);
-			chairComboBox.setSelectedIndex(-1);
-			chairComboBox.setSelectedIndex(0);
 		} finally {
 			HibernateUtil.closeSession();
 		}
@@ -193,9 +194,6 @@ public class UpdateOrCancelInitializer {
 			}
 		} finally {
 			HibernateUtil.closeSession();
-			if (lecturerComboBox.getItemCount() > 0) {
-				lecturerComboBox.setSelectedIndex(0);
-			}
 		}
 	}
 

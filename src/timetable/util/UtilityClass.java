@@ -11,10 +11,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 
-import hibernateFiles.entity.Chair;
-import hibernateFiles.entity.Group;
-import hibernateFiles.entity.Lecturer;
-import hibernateFiles.entity.Subject;
+import by.bsac.timetable.hibernateFiles.entity.Chair;
+import by.bsac.timetable.hibernateFiles.entity.Group;
+import by.bsac.timetable.hibernateFiles.entity.Lecturer;
+import by.bsac.timetable.hibernateFiles.entity.Subject;
 import supportClasses.VerticalLabelUI;
 
 public class UtilityClass {

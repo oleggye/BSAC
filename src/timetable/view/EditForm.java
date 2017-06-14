@@ -1,10 +1,5 @@
 package timetable.view;
 
-import hibernateFiles.entity.Chair;
-import hibernateFiles.entity.Faculty;
-import hibernateFiles.entity.Group;
-import hibernateFiles.entity.Lecturer;
-import hibernateFiles.entity.Subject;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -27,13 +22,20 @@ import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
+
+import by.bsac.timetable.hibernateFiles.entity.Chair;
+import by.bsac.timetable.hibernateFiles.entity.Faculty;
+import by.bsac.timetable.hibernateFiles.entity.Group;
+import by.bsac.timetable.hibernateFiles.entity.Lecturer;
+import by.bsac.timetable.hibernateFiles.entity.Subject;
+import by.bsac.timetable.service.exception.ServiceException;
+import by.bsac.timetable.service.factory.IServiceFactory;
+import by.bsac.timetable.service.factory.ServiceFactoryName;
+import by.bsac.timetable.service.factory.ServiceFactoryProvider;
 import supportClasses.CheckGeneralization;
 import java.util.List;
 import javax.swing.JOptionPane;
-import service.exception.ServiceException;
-import service.factory.IServiceFactory;
-import service.factory.ServiceFactoryName;
-import service.factory.ServiceFactoryProvider;
+
 import supportClasses.SupportClass;
 import supportClasses.GetNamesClass;
 
@@ -295,7 +297,7 @@ public class EditForm extends JDialog {
 
 		IServiceFactory factory = ServiceFactoryProvider.getInstance().getServiceFactory(ServiceFactoryName.CHOKE);
 		//
-		chairsCollection = factory.getChairService().getAllChairs();
+		chairsCollection = factory.getChairService().getAllChair();
 		final DefaultComboBoxModel model1 = new DefaultComboBoxModel(GetNamesClass.getChairsNames(chairsCollection));
 		this.comboBox.setModel(model1);
 	}
@@ -428,8 +430,6 @@ public class EditForm extends JDialog {
 															// выбранного
 															// элемента в
 															// ComboBox
-		// groupsCollection = (ArrayList)
-		// Factory.getInstance().getGroupsDAO().getGroupsRecordsByFacultyId(facultiesCollection.get(CB_index));
 		groupsCollection = factory.getGroupService()
 				.getGroupsRecordsByFacultyIdAndEduLevel(facultiesCollection.get(CB_index), this.edu_level);
 		initTableByGroups(groupsCollection);

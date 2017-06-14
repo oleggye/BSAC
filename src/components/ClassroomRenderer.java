@@ -11,7 +11,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 
-import hibernateFiles.entity.Classroom;
+import by.bsac.timetable.hibernateFiles.entity.Classroom;
 
 public class ClassroomRenderer<E> implements ListCellRenderer<E> {
 

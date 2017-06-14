@@ -2,14 +2,18 @@ package tableClasses;
 
 import java.awt.Component;
 
-import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
-
 import components.IName;
 
 public class MyTableCellRenderer extends DefaultTableCellRenderer {
+
+	private static final long serialVersionUID = 1L;
+
+	public MyTableCellRenderer() {
+		super.setHorizontalAlignment(SwingConstants.CENTER);
+	}
 
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
@@ -17,21 +21,7 @@ public class MyTableCellRenderer extends DefaultTableCellRenderer {
 
 		Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 		if (value != null) {
-			System.out.println();
 		}
-
-		// Object valueAt = table.getModel().getValueAt(row, column);
-//
-//		Object printedValue;
-//		if (value instanceof IName) {
-//			printedValue = ((IName) value).getName();
-//		} else {
-//			printedValue = value;
-//		}
-//		//table.getModel().setValueAt(printedValue, row, column);
-//		component.sette
-		
-
 		return component;
 	}
 
@@ -46,5 +36,4 @@ public class MyTableCellRenderer extends DefaultTableCellRenderer {
 		}
 		setText((printedValue == null) ? "" : printedValue.toString());
 	}
-
 }

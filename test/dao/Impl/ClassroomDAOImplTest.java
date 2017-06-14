@@ -4,11 +4,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import dao.IClassroomDAO;
-import dao.exception.DAOException;
-import dao.factory.DAOFactory;
-import hibernateFiles.entity.Classroom;
-import hibernateFiles.entity.builder.ClassroomBuilder;
+import by.bsac.timetable.dao.IClassroomDAO;
+import by.bsac.timetable.dao.exception.DAOException;
+import by.bsac.timetable.dao.factory.DAOFactory;
+import by.bsac.timetable.hibernateFiles.entity.Classroom;
+import by.bsac.timetable.hibernateFiles.entity.builder.ClassroomBuilder;
 
 public class ClassroomDAOImplTest {
 

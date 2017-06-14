@@ -1,11 +1,7 @@
 package supportClasses;
 
-import hibernateFiles.entity.Group;
-import hibernateFiles.entity.Lecturer;
 import tableClasses.TablesArray;
 import tableClasses.ArrayPosition;
-import hibernateFiles.entity.Record;
-import hibernateFiles.entity.Subject;
 
 import java.awt.Component;
 import java.awt.Window;
@@ -21,8 +17,15 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
-import service.exception.ServiceException;
-import service.factory.impl.ServiceFactory;
+
+import by.bsac.timetable.hibernateFiles.entity.Group;
+import by.bsac.timetable.hibernateFiles.entity.Lecturer;
+import by.bsac.timetable.hibernateFiles.entity.Record;
+import by.bsac.timetable.hibernateFiles.entity.Subject;
+import by.bsac.timetable.hibernateFiles.entity.SubjectFor;
+import by.bsac.timetable.service.exception.ServiceException;
+import by.bsac.timetable.service.factory.impl.ServiceFactory;
+import timetable.util.LessonFor;
 import timetable.view.MainForm;
 
 public class SupportClass {
@@ -121,6 +124,34 @@ public class SupportClass {
 		}
 	}
 
+	/**
+	 * <table border="1">
+	 * <caption>{@link SubjectFor} mapping</caption>
+	 * <tr>
+	 * <th>{@link SubjectFor.getId()}</th>
+	 * <th>description</th>
+	 * </tr>
+	 * <tr>
+	 * <td>1</td>
+	 * <td>FIRST_SUBGROUP</td>
+	 * </tr>
+	 * <tr>
+	 * <td>2</td>
+	 * <td>SECOND_SUBGROUP</td>
+	 * </tr>
+	 * <tr>
+	 * <td>3</td>
+	 * <td>FULL_GROUP</td>
+	 * </tr>
+	 * <tr>
+	 * <td>4</td>
+	 * <td>FULL_FLOW</td>
+	 * </tr>
+	 * </table>
+	 * 
+	 * @param subgroup
+	 * @return
+	 */
 	public static int[] getColsFromSubgroup(byte subgroup) {
 		// т.к. в таблице индексы с 0
 
@@ -140,6 +171,8 @@ public class SupportClass {
 		case 2:
 			return new int[] { 2 };
 		case 3:
+			return new int[] { 1, 2 };
+		case 4:
 			return new int[] { 1, 2 };
 		default:
 			return new int[] { 1 };

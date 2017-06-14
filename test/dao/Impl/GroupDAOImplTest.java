@@ -6,13 +6,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import dao.IGroupDAO;
-import dao.exception.DAOException;
-import dao.factory.DAOFactory;
-import hibernateFiles.entity.Faculty;
-import hibernateFiles.entity.Group;
-import hibernateFiles.entity.builder.FacultyBuilder;
-import hibernateFiles.entity.builder.GroupBuilder;
+import by.bsac.timetable.dao.IGroupDAO;
+import by.bsac.timetable.dao.exception.DAOException;
+import by.bsac.timetable.dao.factory.DAOFactory;
+import by.bsac.timetable.hibernateFiles.entity.Faculty;
+import by.bsac.timetable.hibernateFiles.entity.Group;
+import by.bsac.timetable.hibernateFiles.entity.builder.FacultyBuilder;
+import by.bsac.timetable.hibernateFiles.entity.builder.GroupBuilder;
 
 public class GroupDAOImplTest {
 

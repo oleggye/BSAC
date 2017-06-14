@@ -27,19 +27,19 @@ import javax.swing.event.ChangeEvent;
 
 import org.jdatepicker.impl.JDatePickerImpl;
 
+import by.bsac.timetable.command.CommandProvider;
+import by.bsac.timetable.command.ICommand;
+import by.bsac.timetable.command.exception.CommandException;
+import by.bsac.timetable.command.util.Request;
+import by.bsac.timetable.hibernateFiles.entity.Chair;
+import by.bsac.timetable.hibernateFiles.entity.Classroom;
+import by.bsac.timetable.hibernateFiles.entity.Group;
+import by.bsac.timetable.hibernateFiles.entity.Lecturer;
+import by.bsac.timetable.hibernateFiles.entity.Record;
+import by.bsac.timetable.hibernateFiles.entity.Subject;
+import by.bsac.timetable.service.exception.ServiceException;
 import components.ClassroomRenderer;
 import components.MyComboBox;
-import hibernateFiles.entity.Chair;
-import hibernateFiles.entity.Classroom;
-import hibernateFiles.entity.Group;
-import hibernateFiles.entity.Lecturer;
-import hibernateFiles.entity.Record;
-import hibernateFiles.entity.Subject;
-import service.exception.ServiceException;
-import timetable.command.CommandProvider;
-import timetable.command.ICommand;
-import timetable.command.exception.CommandException;
-import timetable.command.util.Request;
 import timetable.util.ActionMode;
 import timetable.util.LessonFor;
 import timetable.util.LessonPeriod;
@@ -48,6 +48,11 @@ import timetable.util.UtilityClass;
 import timetable.util.WeekNumber;
 import timetable.view.util.UpdateOrCancelInitializer;
 
+/*
+ * FIXME: можно добавить флаг, 
+ * которые будет использоваться для проверки того, 
+ * что ничего не изменено, но нажата кнопка "ОК"
+ */
 public class UpdateOrCancelForm extends JDialog {
 
 	private static final long serialVersionUID = 1L;
@@ -56,6 +61,7 @@ public class UpdateOrCancelForm extends JDialog {
 
 	private JFrame parent;
 
+	private Record initialRecord;
 	private Record updateRecord;
 	private Record cancelRecord;
 
@@ -105,22 +111,25 @@ public class UpdateOrCancelForm extends JDialog {
 			buttonPane.add(okButton);
 			getRootPane().setDefaultButton(okButton);
 			okButton.addActionListener((ActionEvent e) -> {
-
+				okButton.setEnabled(false);
 				try {
 					ICommand command = CommandProvider.getInstance().getCommand(action);
 					Request request = new Request();
 
-					if (action.equals(ActionMode.Update)) {
+					if (action.equals(ActionMode.Update_Record)) {
 						request.putParam("updateRecord", updateRecord);
-
 					} else {
 						request.putParam("cancelRecord", cancelRecord);
+						request.putParam("cancelLessonPeriod", cancelLessonPeriod);
 					}
+					request.putParam("initialRecord", initialRecord);
 					command.execute(request);
 					JOptionPane.showMessageDialog(getContentPane(), "Операция выполнена успешно!");
 					this.dispose();
 				} catch (CommandException ex) {
 					JOptionPane.showMessageDialog(getContentPane(), ex);
+				} finally {
+					okButton.setEnabled(true);
 				}
 			});
 		}
@@ -141,14 +150,14 @@ public class UpdateOrCancelForm extends JDialog {
 		tabbedPane.addChangeListener((ChangeEvent e) -> {
 			int selectedIndex = tabbedPane.getSelectedIndex();
 			if (selectedIndex == 0) {
-				action = ActionMode.Update;
+				action = ActionMode.Update_Record;
 			} else {
-				action = ActionMode.Cancel;
+				action = ActionMode.Cancel_Record;
 			}
 		});
 		getContentPane().add(tabbedPane);
 
-		if (action.equals(ActionMode.Update)) {
+		if (action.equals(ActionMode.Update_Record)) {
 
 			JPanel updateTab = new JPanel();
 			tabbedPane.addTab("Обновить запись", null, updateTab, null);
@@ -158,7 +167,7 @@ public class UpdateOrCancelForm extends JDialog {
 			JPanel cancelTab = new JPanel();
 			tabbedPane.addTab("Отменить запись", null, cancelTab, null);
 			cancelTab.setLayout(null);
-			constractCancelTab(cancelTab, date);
+			constractCancelTab(cancelTab, lessonDate, date);
 		}
 	}
 
@@ -175,7 +184,7 @@ public class UpdateOrCancelForm extends JDialog {
 		fromDatePickerForUpdate.addActionListener((ActionEvent e) -> {
 			// FIXME: проверка на то, чтобы dateFrom <= dateTo
 			Date value = (Date) fromDatePickerForUpdate.getModel().getValue();
-			System.out.println("selected date:" + value);
+			System.out.println("selected date from:" + value);
 			updateRecord.setDateFrom(value);
 		});
 
@@ -183,7 +192,7 @@ public class UpdateOrCancelForm extends JDialog {
 		toDatePickerForUpdate.addActionListener((ActionEvent e) -> {
 			// FIXME: проверка на то, чтобы dateTo >= dateFrom
 			Date value = (Date) toDatePickerForUpdate.getModel().getValue();
-			System.out.println("selected date:" + value);
+			System.out.println("selected date to:" + value);
 			updateRecord.setDateTo(value);
 		});
 
@@ -534,10 +543,7 @@ public class UpdateOrCancelForm extends JDialog {
 		panel_6.add(updateSubjectComboBox);
 
 		updateChairComboBox.addItemListener((java.awt.event.ItemEvent evt) -> {
-			if (evt.getStateChange() == ItemEvent.SELECTED) {
-
-				// FIXME: явный баг при обновлении, если пустой выпадающий
-				// список
+			if (evt.getStateChange() == ItemEvent.SELECTED || evt.getStateChange() == ItemEvent.ITEM_STATE_CHANGED) {
 				try {
 					initializer.initSubjectComboBox(updateSubjectComboBox, updateChairComboBox);
 					initializer.initLecturerComboBox(updateLecturerComboBox, updateChairComboBox);
@@ -672,7 +678,11 @@ public class UpdateOrCancelForm extends JDialog {
 			if (updateChairComboBox.getItemCount() != 0) {
 				Chair chair = updateRecord.getLecturer().getChair();
 				System.out.println("idChair:" + chair.getIdChair());
+				// updateChairComboBox.setSelectedItem(chair);
 				UtilityClass.selectCBItemById(updateChairComboBox, chair);
+
+				initializer.initSubjectComboBox(updateSubjectComboBox, updateChairComboBox);
+				initializer.initLecturerComboBox(updateLecturerComboBox, updateChairComboBox);
 
 				Subject subject = updateRecord.getSubject();
 				System.out.println("idSubject:" + subject.getIdSubject());
@@ -695,12 +705,12 @@ public class UpdateOrCancelForm extends JDialog {
 		}
 	}
 
-	private void constractCancelTab(JPanel cancelTab, String date) {
+	private void constractCancelTab(JPanel cancelTab, Date lessonDate, String date) {
 		/*-------------------------------------------------*/
 		/*----------панель для отмены расписания-----------*/
 		/*-------------------------------------------------*/
 
-		JDatePickerImpl oneDatePickerForCanceling = initializer.initDatePicker(cancelRecord.getDateFrom());
+		JDatePickerImpl oneDatePickerForCanceling = initializer.initDatePicker(lessonDate);
 		oneDatePickerForCanceling.addActionListener((ActionEvent e) -> {
 			Date value = (Date) oneDatePickerForCanceling.getModel().getValue();
 			System.out.println("selected date:" + value);
@@ -713,13 +723,11 @@ public class UpdateOrCancelForm extends JDialog {
 			Date value = (Date) fromDatePickerForCanceling.getModel().getValue();
 			System.out.println("selected date:" + value);
 			cancelRecord.setDateFrom(value);
-			cancelRecord.setDateTo(value);
 		});
 		JDatePickerImpl toDatePickerForCanceling = initializer.initDatePicker(cancelRecord.getDateTo());
 		toDatePickerForCanceling.addActionListener((ActionEvent e) -> {
 			Date value = (Date) toDatePickerForCanceling.getModel().getValue();
 			System.out.println("selected date:" + value);
-			cancelRecord.setDateFrom(value);
 			cancelRecord.setDateTo(value);
 		});
 		ButtonGroup periodBtnGroup = new ButtonGroup();
@@ -829,8 +837,10 @@ public class UpdateOrCancelForm extends JDialog {
 		}
 		forOneDateCancelRadioButton.addActionListener((ActionEvent e) -> {
 			cancelLessonPeriod = LessonPeriod.FOR_ONE_DATE;
-			cancelRecord.setDateFrom((Date) fromDatePickerForCanceling.getModel().getValue());
-			cancelRecord.setDateTo((Date) toDatePickerForCanceling.getModel().getValue());
+			Date value = (Date) oneDatePickerForCanceling.getModel().getValue();
+			cancelRecord.setDateFrom(value);
+			cancelRecord.setDateTo(value);
+
 			// TODO: пока убрал, так как это мешает инициализации
 			// cancelByTheDatePanel.setVisible(true);
 			// selectAnotherCancelDateLabel.setVisible(true);
@@ -852,8 +862,12 @@ public class UpdateOrCancelForm extends JDialog {
 		}
 		forRangeDateCancelRadioButton.addActionListener((ActionEvent e) -> {
 			cancelLessonPeriod = LessonPeriod.FOR_THE_PERIOD;
-			cancelRecord.setDateFrom((Date) oneDatePickerForCanceling.getModel().getValue());
-			cancelRecord.setDateTo((Date) oneDatePickerForCanceling.getModel().getValue());
+			Date dateFromValue = (Date) fromDatePickerForCanceling.getModel().getValue();
+			Date dateToValue = (Date) toDatePickerForCanceling.getModel().getValue();
+
+			cancelRecord.setDateFrom(dateFromValue);
+			cancelRecord.setDateTo(dateToValue);
+
 			// TODO: пока убрал, так как это мешает инициализации
 			// oneDatePickerForCanceling.setEnabled(false);
 			//
@@ -1079,5 +1093,13 @@ public class UpdateOrCancelForm extends JDialog {
 
 	public void setCancelRecord(Record cancelRecord) {
 		this.cancelRecord = cancelRecord;
+	}
+
+	public Record getInitialRecord() {
+		return initialRecord;
+	}
+
+	public void setInitialRecord(Record initialRecord) {
+		this.initialRecord = initialRecord;
 	}
 }

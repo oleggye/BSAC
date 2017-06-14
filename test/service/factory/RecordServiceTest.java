@@ -8,13 +8,15 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import hibernateFiles.entity.Faculty;
-import hibernateFiles.entity.Group;
-import hibernateFiles.entity.Record;
-import hibernateFiles.entity.builder.FacultyBuilder;
-import hibernateFiles.entity.builder.GroupBuilder;
-import service.IRecordService;
-import service.exception.ServiceException;
+import by.bsac.timetable.hibernateFiles.entity.Faculty;
+import by.bsac.timetable.hibernateFiles.entity.Group;
+import by.bsac.timetable.hibernateFiles.entity.Record;
+import by.bsac.timetable.hibernateFiles.entity.builder.FacultyBuilder;
+import by.bsac.timetable.hibernateFiles.entity.builder.GroupBuilder;
+import by.bsac.timetable.service.IRecordService;
+import by.bsac.timetable.service.exception.ServiceException;
+import by.bsac.timetable.service.factory.IServiceFactory;
+import by.bsac.timetable.service.factory.ServiceFactoryProvider;
 
 public class RecordServiceTest {
 

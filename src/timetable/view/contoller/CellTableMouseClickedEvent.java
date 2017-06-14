@@ -1,5 +1,6 @@
 package timetable.view.contoller;
 
+import java.awt.Cursor;
 import java.awt.event.MouseEvent;
 import java.util.Date;
 import java.util.List;
@@ -10,17 +11,17 @@ import javax.swing.JFrame;
 
 import org.jdatepicker.impl.JDatePickerImpl;
 
-import hibernateFiles.entity.Group;
-import hibernateFiles.entity.Record;
+import by.bsac.timetable.command.CommandProvider;
+import by.bsac.timetable.command.ICommand;
+import by.bsac.timetable.command.exception.CommandException;
+import by.bsac.timetable.command.util.Request;
+import by.bsac.timetable.hibernateFiles.entity.Group;
+import by.bsac.timetable.hibernateFiles.entity.Record;
 import supportClasses.DateUtil;
 import supportClasses.SupportClass;
 import tableClasses.ArrayPosition;
 import tableClasses.MyMultiSpanCellTable;
 import tableClasses.TablesArray;
-import timetable.command.CommandProvider;
-import timetable.command.ICommand;
-import timetable.command.exception.CommandException;
-import timetable.command.util.Request;
 import timetable.util.ActionMode;
 import timetable.view.AddNewRecordForm;
 import timetable.view.MainForm;
@@ -43,6 +44,7 @@ public class CellTableMouseClickedEvent extends java.awt.event.MouseAdapter {
 
 	@Override
 	public void mouseClicked(MouseEvent event) {
+		mainForm.getMainFrame().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
 		if (mainForm.getIsGroupSelected()) {
 
@@ -78,30 +80,34 @@ public class CellTableMouseClickedEvent extends java.awt.event.MouseAdapter {
 
 				invokeUpdateOrCancelForm(mainForm.getMainFrame(), lessonDate, group, record, selectedWeekNumber,
 						selectedWeekDay, selectedLessonOrdinalNumber);
+				mainForm.getMainFrame().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 			} else {
 				System.out.println("It isn't a record:");
 				invokeAddNewRecordForm(mainForm.getMainFrame(), lessonDate, group, selectedWeekNumber, selectedWeekDay,
 						selectedLessonOrdinalNumber);
+				mainForm.getMainFrame().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 			}
 			table.clearSelection(); // убираем выделение
 
+			mainForm.getMainFrame().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 			try {
-				ICommand command = CommandProvider.getInstance().getCommand(ActionMode.GetGroupTimetable);
+				ICommand command = CommandProvider.getInstance().getCommand(ActionMode.Get_Group_Timetable);
 				Request request = new Request();
 				request.putParam("group", group);
 				request.putParam("referenceDate", referenceDate);
 				command.execute(request);
-				
+
 				List<Record> recordList = (List<Record>) request.getValue("recordList");
-				
+
 				if (!recordList.isEmpty()) {
 					SupportClass.setModelsForTables(recordList, tableArray);
 				}
-				
 
 			} catch (CommandException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} finally {
+				mainForm.getMainFrame().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 			}
 		}
 	}

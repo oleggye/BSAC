@@ -9,19 +9,19 @@
 		<property name="hibernate.connection.password">123</property>
 		<property name="connection.pool_size">1</property>
 		<property name="current_session_context_class">thread</property>
-<!-- 		<property name="hibernate.show_sql">true</property> -->
+		<property name="hibernate.show_sql">true</property>
 		<property name="hibernate.query.factory_class">org.hibernate.hql.internal.classic.ClassicQueryTranslatorFactory</property>
 		<property name="hibernate.format_sql">true</property>
-		<mapping resource="hibernateFiles/entity/Chair.hbm.xml" />
-		<mapping resource="hibernateFiles/entity/SubjectType.hbm.xml" />
-		<mapping resource="hibernateFiles/entity/Faculty.hbm.xml" />
-		<mapping resource="hibernateFiles/entity/Classroom.hbm.xml" />
-		<mapping resource="hibernateFiles/entity/Cancellation.hbm.xml" />
-		<mapping resource="hibernateFiles/entity/SubjectFor.hbm.xml" />
-		<mapping resource="hibernateFiles/entity/Subject.hbm.xml" />
-		<mapping resource="hibernateFiles/entity/Lecturer.hbm.xml" />
-		<mapping resource="hibernateFiles/entity/Record.hbm.xml" />
-		<mapping resource="hibernateFiles/entity/Group.hbm.xml" />
-		<mapping resource="hibernateFiles/entity/Flow.hbm.xml" />
+		<mapping resource="by/bsac/timetable/hibernateFiles/entity/Chair.hbm.xml" />
+		<mapping resource="by/bsac/timetable/hibernateFiles/entity/SubjectType.hbm.xml" />
+		<mapping resource="by/bsac/timetable/hibernateFiles/entity/Faculty.hbm.xml" />
+		<mapping resource="by/bsac/timetable/hibernateFiles/entity/Classroom.hbm.xml" />
+		<mapping resource="by/bsac/timetable/hibernateFiles/entity/Cancellation.hbm.xml" />
+		<mapping resource="by/bsac/timetable/hibernateFiles/entity/SubjectFor.hbm.xml" />
+		<mapping resource="by/bsac/timetable/hibernateFiles/entity/Subject.hbm.xml" />
+		<mapping resource="by/bsac/timetable/hibernateFiles/entity/Lecturer.hbm.xml" />
+		<mapping resource="by/bsac/timetable/hibernateFiles/entity/Record.hbm.xml" />
+		<mapping resource="by/bsac/timetable/hibernateFiles/entity/Group.hbm.xml" />
+		<mapping resource="by/bsac/timetable/hibernateFiles/entity/Flow.hbm.xml" />
 	</session-factory>
 </hibernate-configuration>

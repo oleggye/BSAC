@@ -11,20 +11,21 @@ import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
+import by.bsac.timetable.hibernateFiles.HibernateUtil;
+import by.bsac.timetable.hibernateFiles.entity.Chair;
+import by.bsac.timetable.hibernateFiles.entity.Classroom;
+import by.bsac.timetable.hibernateFiles.entity.Group;
+import by.bsac.timetable.hibernateFiles.entity.Lecturer;
+import by.bsac.timetable.hibernateFiles.entity.Record;
+import by.bsac.timetable.hibernateFiles.entity.Subject;
+import by.bsac.timetable.hibernateFiles.entity.SubjectFor;
+import by.bsac.timetable.hibernateFiles.entity.SubjectType;
+import by.bsac.timetable.hibernateFiles.entity.builder.RecordBuilder;
+import by.bsac.timetable.service.exception.ServiceException;
+import by.bsac.timetable.service.factory.IServiceFactory;
+import by.bsac.timetable.service.factory.ServiceFactoryName;
+import by.bsac.timetable.service.factory.ServiceFactoryProvider;
 import components.MyComboBoxModel;
-import hibernateFiles.entity.Chair;
-import hibernateFiles.entity.Classroom;
-import hibernateFiles.entity.Group;
-import hibernateFiles.entity.Lecturer;
-import hibernateFiles.entity.Record;
-import hibernateFiles.entity.Subject;
-import hibernateFiles.entity.SubjectFor;
-import hibernateFiles.entity.SubjectType;
-import hibernateFiles.entity.builder.RecordBuilder;
-import service.exception.ServiceException;
-import service.factory.IServiceFactory;
-import service.factory.ServiceFactoryName;
-import service.factory.ServiceFactoryProvider;
 import timetable.util.ActionMode;
 import timetable.util.Checker;
 import timetable.util.LessonFor;
@@ -54,8 +55,9 @@ public final class AddNewRecordInitializer {
 	public void initFormFieldList(JFrame parent, Date lessonDate, Group group, byte weekNumber, byte weekDay,
 			byte lessonOrdinalNumber) {
 
+		HibernateUtil.getSession();
 		form.setParent(parent);
-		form.setAction(ActionMode.ADD);
+		form.setAction(ActionMode.Add_Record);
 
 		form.setLessonPeriod(LessonPeriod.FOR_ONE_DATE);
 
@@ -79,6 +81,7 @@ public final class AddNewRecordInitializer {
 				.buildSubjectFor(subjectFor).buildSubjectType(subjectType).buildWeekNumber(weekNumber)
 				.buildWeekDay(weekDay).buildSubjOrdinalNumber(lessonOrdinalNumber).build();
 		form.setAddRecord(addRecord);
+		HibernateUtil.closeSession();
 	}
 
 	/**
@@ -108,12 +111,17 @@ public final class AddNewRecordInitializer {
 	 */
 	public void initChairComboBox(JComboBox<Chair> chairComboBox) throws ServiceException {
 
-		IServiceFactory factory = ServiceFactoryProvider.getInstance().getServiceFactory(ServiceFactoryName.CHOKE);
+		HibernateUtil.getSession();
+		try {
+			IServiceFactory factory = ServiceFactoryProvider.getInstance().getServiceFactory(ServiceFactoryName.CHOKE);
 
-		List<Chair> chairsList = factory.getChairService().getAllChairs();
+			List<Chair> chairsList = factory.getChairService().getAllChair();
 
-		DefaultComboBoxModel<Chair> model = new MyComboBoxModel<>(chairsList);
-		chairComboBox.setModel(model);
+			DefaultComboBoxModel<Chair> model = new MyComboBoxModel<>(chairsList);
+			chairComboBox.setModel(model);
+		} finally {
+			HibernateUtil.closeSession();
+		}
 	}
 
 	/**
@@ -127,17 +135,23 @@ public final class AddNewRecordInitializer {
 	public void initSubjectComboBox(JComboBox<Subject> subjectComboBox, JComboBox<Chair> chairComboBox)
 			throws ServiceException {
 
-		IServiceFactory factory = ServiceFactoryProvider.getInstance().getServiceFactory(ServiceFactoryName.CHOKE);
+		HibernateUtil.getSession();
+		try {
+			IServiceFactory factory = ServiceFactoryProvider.getInstance().getServiceFactory();
 
-		List<Subject> subjectsList = factory.getSubjectService().getSubjectsRecordsByChairIdAndEduLevel(
-				(Chair) chairComboBox.getSelectedItem(), form.getAddRecord().getGroup().getEduLevel());
+			Chair selectedChair = (Chair) chairComboBox.getSelectedItem();
+			byte educationLevel = form.getAddRecord().getGroup().getEduLevel();
+			List<Subject> subjectsList = factory.getSubjectService()
+					.getSubjectsRecordsByChairIdAndEduLevel(selectedChair, educationLevel);
 
-		DefaultComboBoxModel<Subject> model = new MyComboBoxModel<>(subjectsList);
-		subjectComboBox.setModel(model);
-		if (!subjectsList.isEmpty()) {
-			subjectComboBox.setSelectedIndex(0);
-		} else {
-			subjectComboBox.setSelectedIndex(-1);
+			subjectComboBox.removeAllItems();
+
+			if (!subjectsList.isEmpty()) {
+				DefaultComboBoxModel<Subject> model = new MyComboBoxModel<>(subjectsList);
+				subjectComboBox.setModel(model);
+			}
+		} finally {
+			HibernateUtil.closeSession();
 		}
 	}
 
@@ -152,17 +166,20 @@ public final class AddNewRecordInitializer {
 	public void initLecturerComboBox(JComboBox<Lecturer> lecturerComboBox, JComboBox<Chair> chairComboBox)
 			throws ServiceException {
 
-		IServiceFactory factory = ServiceFactoryProvider.getInstance().getServiceFactory(ServiceFactoryName.CHOKE);
+		HibernateUtil.getSession();
+		try {
+			IServiceFactory factory = ServiceFactoryProvider.getInstance().getServiceFactory();
 
-		List<Lecturer> lecturersList = factory.getLecturerService()
-				.getLecturersRecordsByChairId((Chair) chairComboBox.getSelectedItem());
+			List<Lecturer> lecturersList = factory.getLecturerService()
+					.getLecturersRecordsByChairId((Chair) chairComboBox.getSelectedItem());
 
-		DefaultComboBoxModel<Lecturer> model = new MyComboBoxModel<>(lecturersList);
-		lecturerComboBox.setModel(model);
-		if (!lecturersList.isEmpty()) {
-			lecturerComboBox.setSelectedIndex(0);
-		} else {
-			lecturerComboBox.setSelectedIndex(-1);
+			lecturerComboBox.removeAllItems();
+			if (!lecturersList.isEmpty()) {
+				DefaultComboBoxModel<Lecturer> model = new MyComboBoxModel<>(lecturersList);
+				lecturerComboBox.setModel(model);
+			}
+		} finally {
+			HibernateUtil.closeSession();
 		}
 	}
 
@@ -176,11 +193,19 @@ public final class AddNewRecordInitializer {
 	 */
 	public void initClassroomComboBox(JComboBox<Classroom> classroomComboBox) throws ServiceException {
 
-		IServiceFactory factory = ServiceFactoryProvider.getInstance().getServiceFactory(ServiceFactoryName.CHOKE);
+		HibernateUtil.getSession();
+		try {
+			IServiceFactory factory = ServiceFactoryProvider.getInstance().getServiceFactory();
 
-		List<Classroom> classroomsList = factory.getClassroomService().getClassroomList();
+			List<Classroom> classroomsList = factory.getClassroomService().getClassroomList();
 
-		DefaultComboBoxModel<Classroom> model = new MyComboBoxModel<>(classroomsList);
-		classroomComboBox.setModel(model);
+			DefaultComboBoxModel<Classroom> model = new MyComboBoxModel<>(classroomsList);
+			classroomComboBox.setModel(model);
+		} finally {
+			HibernateUtil.closeSession();
+			if (classroomComboBox.getItemCount() > 0) {
+				classroomComboBox.setSelectedIndex(0);
+			}
+		}
 	}
 }

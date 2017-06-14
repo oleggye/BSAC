@@ -4,8 +4,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import dao.exception.DAOException;
-import hibernateFiles.entity.Faculty;
+import by.bsac.timetable.dao.Impl.FacultyDAOImpl;
+import by.bsac.timetable.dao.exception.DAOException;
+import by.bsac.timetable.hibernateFiles.entity.Faculty;
 
 public class FacultyDAOImplTest {
 

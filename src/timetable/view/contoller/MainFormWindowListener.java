@@ -10,7 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 
-import service.exception.ServiceException;
+import by.bsac.timetable.service.exception.ServiceException;
 import timetable.view.EduForm;
 import timetable.view.MainForm;
 

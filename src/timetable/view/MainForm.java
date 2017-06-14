@@ -3,11 +3,9 @@ package timetable.view;
 import tableClasses.TablesArray;
 import timetable.view.contoller.CellTableMouseClickedEvent;
 import timetable.view.contoller.ShowBtnActionEvent;
-import timetable.view.util.MainFormInitializer;
+import timetable.view.util.FormInitializer;
 import supportClasses.SupportClass;
-import hibernateFiles.entity.Faculty;
-import hibernateFiles.entity.Group;
-import hibernateFiles.entity.Record;
+
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -42,25 +40,22 @@ import javax.swing.JProgressBar;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 
+import by.bsac.timetable.exception.ApplicationException;
+import by.bsac.timetable.hibernateFiles.entity.Faculty;
+import by.bsac.timetable.hibernateFiles.entity.Group;
+import by.bsac.timetable.hibernateFiles.entity.Record;
+import by.bsac.timetable.service.exception.ServiceException;
 import components.MyComboBox;
 import org.jdatepicker.impl.*;
-import service.exception.ServiceException;
 
 /**
  * Класс главной формы приложения
  *
  * @author Maksimovich Oleg
- * @version 1.0
+ * @version 2.0
  */
 
-/*
- * FIXME: 1) если выбрать группу, то можно вызвать окно
- * добавления/редактирования без нажатия кнопки;
- * 
- */
 public class MainForm {
-
-	private final MainFormInitializer initializer = new MainFormInitializer(this);
 
 	private JFrame mainFrame;// переменная формы
 	private TablesArray tableArray = new TablesArray(7, 4);
@@ -87,12 +82,13 @@ public class MainForm {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
+				MainForm window = null;
 				try {
-					MainForm window = new MainForm();
+					window = new MainForm();
 					window.mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 					window.mainFrame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
+				} catch (Throwable e) {
+					JOptionPane.showMessageDialog(window.mainFrame.getContentPane(), e.getCause().getMessage());
 				}
 			}
 		});
@@ -140,9 +136,9 @@ public class MainForm {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
 					showWindow(false, progressBarLbl, progressBar);
-				} catch (ServiceException e) {
+				} catch (ServiceException | ApplicationException e) {
 					Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, e);
-					JOptionPane.showMessageDialog(mainFrame.getContentPane(), e);
+					JOptionPane.showMessageDialog(mainFrame.getContentPane(), e.getCause().getMessage());
 				}
 			}
 		});
@@ -150,6 +146,26 @@ public class MainForm {
 
 		JMenu mnNewMenu = new JMenu("\u041D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438");
 		menuBar.add(mnNewMenu);
+
+		JMenuItem changeFacultyMenuItem = new JMenuItem("Редактирование факультетов");
+		changeFacultyMenuItem.addActionListener((ActionEvent e) -> {
+			FacultyEditForm dialog = new FacultyEditForm();
+			dialog.setVisible(true);
+			facultyComboBox.setSelectedIndex(facultyComboBox.getItemCount() - 1 - facultyComboBox.getSelectedIndex());
+			/* очищаем данные во всех таблицах */
+			tableArray.resetAllTablesInArray();
+		});
+		mnNewMenu.add(changeFacultyMenuItem);
+
+		JMenuItem changeChairMenuItem = new JMenuItem("Редактирование кафедр");
+		changeChairMenuItem.addActionListener((ActionEvent e) -> {
+			FacultyEditForm dialog = new FacultyEditForm();
+			dialog.setVisible(true);
+			facultyComboBox.setSelectedIndex(facultyComboBox.getItemCount() - 1 - facultyComboBox.getSelectedIndex());
+			/* очищаем данные во всех таблицах */
+			tableArray.resetAllTablesInArray();
+		});
+		mnNewMenu.add(changeChairMenuItem);
 
 		JMenuItem menuItem = new JMenuItem("Редактирование группы");
 		menuItem.addActionListener((ActionEvent e) -> {
@@ -198,10 +214,10 @@ public class MainForm {
 			if (ev.getStateChange() == ItemEvent.SELECTED) {
 				tableArray.resetAllTablesInArray();
 				try {
-					initializer.initGroupComboBox(facultyComboBox, groupComboBox);
-				} catch (ServiceException e) {
+					FormInitializer.initGroupComboBox(facultyComboBox, groupComboBox, educationLevel);
+				} catch (ServiceException | ApplicationException e) {
 					Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, e);
-					JOptionPane.showMessageDialog(mainFrame.getContentPane(), e);
+					JOptionPane.showMessageDialog(mainFrame.getContentPane(), e.getCause().getMessage());
 				} finally {
 					if (groupComboBox.getItemCount() > 0) {
 						groupComboBox.setSelectedIndex(0);
@@ -263,7 +279,7 @@ public class MainForm {
 		tableArray.initArray(mainRecordList, centralPanel, listener);
 		// ********************************************************************************
 
-		initializer.initLeftPanel(scrollPane);
+		FormInitializer.initLeftPanel(scrollPane);
 		addWindowListener(new MainFormWindowListener(mainFrame, progressBarLbl, progressBar));
 	}
 
@@ -283,18 +299,27 @@ public class MainForm {
 
 	private void showWindow(boolean isJustStarted, JLabel progressBarLbl, JProgressBar progressBar)
 			throws ServiceException {
+		mainFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		try {
 			// TODO add your handling code here:
 			if (getEduLevel(isJustStarted))// уровень образования
 			{
 				mainFrame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-				initializer.initMainForm(facultyComboBox, groupComboBox, progressBarLbl, progressBar);
+				FormInitializer.initMainForm(facultyComboBox, groupComboBox, progressBarLbl, progressBar,
+						educationLevel);
 				// 27.10.16this.actOrDeactivateButton();
 			}
 		} catch (ServiceException ex) {
 			Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
-			JOptionPane.showMessageDialog(mainFrame.getContentPane(), ex);
+			JOptionPane.showMessageDialog(mainFrame.getContentPane(), ex.getCause().getMessage());
 			progressBarLbl.setText(ex.toString());
+
+		} catch (Throwable ex) {
+			JOptionPane.showMessageDialog(mainFrame.getContentPane(), ex.getCause().getMessage());
+			JOptionPane.showMessageDialog(mainFrame.getContentPane(), "Обратитесь к администратору!");
+			JOptionPane.showMessageDialog(mainFrame.getContentPane(), "Приложение будет закрыто!");
+			mainFrame.dispose();
+
 		} finally {
 			mainFrame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		}
@@ -331,9 +356,9 @@ public class MainForm {
 		public void windowOpened(java.awt.event.WindowEvent evt) {
 			try {
 				showWindow(true, progressBarLbl, progressBar);
-			} catch (ServiceException e) {
+			} catch (ServiceException | ApplicationException e) {
 				Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, e);
-				JOptionPane.showMessageDialog(mainFrame.getContentPane(), e);
+				JOptionPane.showMessageDialog(mainFrame.getContentPane(), e.getCause().getMessage());
 				progressBarLbl.setText(e.toString());
 			} finally {
 				mainFrame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -342,7 +367,9 @@ public class MainForm {
 
 		@Override
 		public void windowClosing(WindowEvent e) {
-			initializer.closeSession();
+			// try {
+			// initializer.closeSession();
+			// } finally {
 			super.windowClosing(e);
 		}
 	}

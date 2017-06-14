@@ -16,14 +16,22 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import org.jdatepicker.impl.JDatePickerImpl;
+
+import by.bsac.timetable.command.CommandProvider;
+import by.bsac.timetable.command.ICommand;
+import by.bsac.timetable.command.exception.CommandException;
+import by.bsac.timetable.command.util.Request;
+import by.bsac.timetable.hibernateFiles.HibernateUtil;
+import by.bsac.timetable.hibernateFiles.entity.Chair;
+import by.bsac.timetable.hibernateFiles.entity.Classroom;
+import by.bsac.timetable.hibernateFiles.entity.Group;
+import by.bsac.timetable.hibernateFiles.entity.Lecturer;
+import by.bsac.timetable.hibernateFiles.entity.Record;
+import by.bsac.timetable.hibernateFiles.entity.Subject;
+import by.bsac.timetable.service.exception.ServiceException;
 import components.ClassroomRenderer;
 import components.MyComboBox;
-import hibernateFiles.entity.Chair;
-import hibernateFiles.entity.Classroom;
-import hibernateFiles.entity.Group;
-import hibernateFiles.entity.Lecturer;
-import hibernateFiles.entity.Record;
-import hibernateFiles.entity.Subject;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -33,11 +41,7 @@ import javax.swing.JComboBox;
 import javax.swing.JCheckBox;
 import javax.swing.JTabbedPane;
 import javax.swing.border.LineBorder;
-import service.exception.ServiceException;
-import timetable.command.CommandProvider;
-import timetable.command.ICommand;
-import timetable.command.exception.CommandException;
-import timetable.command.util.Request;
+
 import timetable.util.ActionMode;
 import timetable.util.LessonFor;
 import timetable.util.LessonPeriod;
@@ -58,7 +62,7 @@ public class AddNewRecordForm extends JDialog {
 
 	private Record addRecord = new Record();
 
-	private ActionMode action = ActionMode.ADD;
+	private ActionMode action = ActionMode.Add_Record;
 	private int edu_level = 1;
 
 	/**
@@ -67,7 +71,7 @@ public class AddNewRecordForm extends JDialog {
 	private LessonFor lessonFor = LessonFor.FULL_FLOW;
 	private LessonPeriod lessonPeriod = LessonPeriod.FOR_ONE_DATE;
 	private LessonType lessonType = LessonType.LECTURE;
-	private Set<WeekNumber> addWeekSet = new HashSet<>();
+	private Set<WeekNumber> weekSet = new HashSet<>();
 
 	/**
 	 * Constructor for adding a record
@@ -100,9 +104,12 @@ public class AddNewRecordForm extends JDialog {
 			buttonPane.add(okButton);
 			getRootPane().setDefaultButton(okButton);
 			okButton.addActionListener((ActionEvent e) -> {
+				okButton.setEnabled(false);
+
 				ICommand command = CommandProvider.getInstance().getCommand(action);
 				Request request = new Request();
 				request.putParam("addRecord", addRecord);
+				request.putParam("weekSet", weekSet);
 
 				try {
 					command.execute(request);
@@ -110,6 +117,8 @@ public class AddNewRecordForm extends JDialog {
 					this.dispose();
 				} catch (CommandException ex) {
 					JOptionPane.showMessageDialog(getContentPane(), ex);
+				} finally {
+					okButton.setEnabled(true);
 				}
 			});
 		}
@@ -511,11 +520,11 @@ public class AddNewRecordForm extends JDialog {
 		}
 		firstWeekForAdd.addActionListener((ActionEvent e) -> {
 			if (firstWeekForAdd.isSelected()) {
-				addWeekSet.add(WeekNumber.FIRST);
+				weekSet.add(WeekNumber.FIRST);
 			} else {
-				addWeekSet.remove(WeekNumber.FIRST);
+				weekSet.remove(WeekNumber.FIRST);
 			}
-			JOptionPane.showMessageDialog(this.getContentPane(), addWeekSet);
+			JOptionPane.showMessageDialog(this.getContentPane(), weekSet);
 		});
 		duplicateOnWeeksPanel.add(firstWeekForAdd);
 
@@ -527,9 +536,9 @@ public class AddNewRecordForm extends JDialog {
 		}
 		secondWeekForAdd.addActionListener((ActionEvent e) -> {
 			if (secondWeekForAdd.isSelected()) {
-				addWeekSet.add(WeekNumber.SECOND);
+				weekSet.add(WeekNumber.SECOND);
 			} else {
-				addWeekSet.remove(WeekNumber.SECOND);
+				weekSet.remove(WeekNumber.SECOND);
 			}
 		});
 		duplicateOnWeeksPanel.add(secondWeekForAdd);
@@ -542,9 +551,9 @@ public class AddNewRecordForm extends JDialog {
 		}
 		thirdWeekForAdd.addActionListener((ActionEvent e) -> {
 			if (thirdWeekForAdd.isSelected()) {
-				addWeekSet.add(WeekNumber.THIRD);
+				weekSet.add(WeekNumber.THIRD);
 			} else {
-				addWeekSet.remove(WeekNumber.THIRD);
+				weekSet.remove(WeekNumber.THIRD);
 			}
 		});
 		duplicateOnWeeksPanel.add(thirdWeekForAdd);
@@ -557,9 +566,9 @@ public class AddNewRecordForm extends JDialog {
 		}
 		fourthWeekForAdd.addActionListener((ActionEvent e) -> {
 			if (fourthWeekForAdd.isSelected()) {
-				addWeekSet.add(WeekNumber.FOURTH);
+				weekSet.add(WeekNumber.FOURTH);
 			} else {
-				addWeekSet.remove(WeekNumber.FOURTH);
+				weekSet.remove(WeekNumber.FOURTH);
 			}
 		});
 		duplicateOnWeeksPanel.add(fourthWeekForAdd);
@@ -593,6 +602,7 @@ public class AddNewRecordForm extends JDialog {
 		addTab.add(label_10);
 
 		try {
+			HibernateUtil.getSession();
 			initializer.initChairComboBox(chairComboBox);
 			if (chairComboBox.getItemCount() != 0) {
 				initializer.initSubjectComboBox(subjectComboBox, chairComboBox);
@@ -605,6 +615,8 @@ public class AddNewRecordForm extends JDialog {
 		} catch (ServiceException e) {
 			Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, e);
 			JOptionPane.showMessageDialog(getContentPane(), e);
+		}finally{
+			HibernateUtil.closeSession();
 		}
 	}
 
@@ -689,11 +701,11 @@ public class AddNewRecordForm extends JDialog {
 	}
 
 	public Set<WeekNumber> getWeekSet() {
-		return addWeekSet;
+		return weekSet;
 	}
 
 	public void setAddWeekSet(Set<WeekNumber> weekSet) {
-		this.addWeekSet = weekSet;
+		this.weekSet = weekSet;
 	}
 
 	public Record getAddRecord() {

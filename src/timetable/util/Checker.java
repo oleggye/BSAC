@@ -1,7 +1,7 @@
 package timetable.util;
 
-import hibernateFiles.entity.Group;
-import hibernateFiles.entity.Record;
+import by.bsac.timetable.hibernateFiles.entity.Group;
+import by.bsac.timetable.hibernateFiles.entity.Record;
 
 public final class Checker {
 

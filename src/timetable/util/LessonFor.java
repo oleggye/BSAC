@@ -1,6 +1,6 @@
 package timetable.util;
 
-import hibernateFiles.entity.SubjectFor;
+import by.bsac.timetable.hibernateFiles.entity.SubjectFor;
 
 public enum LessonFor {
 

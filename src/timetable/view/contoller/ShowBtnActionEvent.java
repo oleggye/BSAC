@@ -13,15 +13,15 @@ import javax.swing.JOptionPane;
 
 import org.jdatepicker.impl.JDatePickerImpl;
 
-import hibernateFiles.entity.Group;
-import hibernateFiles.entity.Record;
-import service.exception.ServiceException;
+import by.bsac.timetable.command.CommandProvider;
+import by.bsac.timetable.command.ICommand;
+import by.bsac.timetable.command.exception.CommandException;
+import by.bsac.timetable.command.util.Request;
+import by.bsac.timetable.hibernateFiles.entity.Group;
+import by.bsac.timetable.hibernateFiles.entity.Record;
+import by.bsac.timetable.service.exception.ServiceException;
 import supportClasses.SupportClass;
 import tableClasses.TablesArray;
-import timetable.command.CommandProvider;
-import timetable.command.ICommand;
-import timetable.command.exception.CommandException;
-import timetable.command.util.Request;
 import timetable.util.ActionMode;
 import timetable.view.MainForm;
 
@@ -48,7 +48,7 @@ public class ShowBtnActionEvent implements ActionListener {
 		Group group = (Group) groupComboBox.getSelectedItem();
 		try {
 			Date referenceDate = (Date) datePicker.getModel().getValue();
-			ICommand command = CommandProvider.getInstance().getCommand(ActionMode.GetGroupTimetable);
+			ICommand command = CommandProvider.getInstance().getCommand(ActionMode.Get_Group_Timetable);
 			Request request = new Request();
 			request.putParam("group", group);
 			request.putParam("referenceDate", referenceDate);

@@ -17,14 +17,6 @@ import javax.swing.JComboBox;
 import javax.swing.event.AncestorListener;
 
 import components.MyComboBoxModel;
-import hibernateFiles.entity.Record;
-import hibernateFiles.entity.Subject;
-import hibernateFiles.entity.SubjectFor;
-import hibernateFiles.entity.SubjectType;
-import hibernateFiles.entity.builder.RecordBuilder;
-import hibernateFiles.entity.builder.SubjectBuilder;
-import hibernateFiles.entity.builder.SubjectForBuilder;
-import hibernateFiles.entity.builder.SubjectTypeBuilder;
 import tableClasses.MyMultiSpanCellTable;
 
 import javax.swing.event.AncestorEvent;
@@ -37,6 +29,14 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import by.bsac.component.multiSpanCellTable.AttributiveCellTableModel;
+import by.bsac.timetable.hibernateFiles.entity.Record;
+import by.bsac.timetable.hibernateFiles.entity.Subject;
+import by.bsac.timetable.hibernateFiles.entity.SubjectFor;
+import by.bsac.timetable.hibernateFiles.entity.SubjectType;
+import by.bsac.timetable.hibernateFiles.entity.builder.RecordBuilder;
+import by.bsac.timetable.hibernateFiles.entity.builder.SubjectBuilder;
+import by.bsac.timetable.hibernateFiles.entity.builder.SubjectForBuilder;
+import by.bsac.timetable.hibernateFiles.entity.builder.SubjectTypeBuilder;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;

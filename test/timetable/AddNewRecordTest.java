@@ -9,11 +9,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import by.bsac.timetable.hibernateFiles.entity.Group;
+import by.bsac.timetable.hibernateFiles.entity.Record;
+
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
-import hibernateFiles.entity.Group;
-import hibernateFiles.entity.Record;
 import timetable.view.AddNewRecordForm;
 
 public final class AddNewRecordTest {

@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import hibernateFiles.entity.Record;
+import by.bsac.timetable.hibernateFiles.entity.Record;
 import tableClasses.ArrayPosition;
 
 public class TablesArray {

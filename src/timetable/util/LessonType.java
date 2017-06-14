@@ -1,6 +1,6 @@
 package timetable.util;
 
-import hibernateFiles.entity.SubjectType;
+import by.bsac.timetable.hibernateFiles.entity.SubjectType;
 
 public enum LessonType {
 	LECTURE, LABORATORY_WORK, PRACTICE_WORK, CONSULTATION, CREDIT, EXAM, TRAINING_SESSION, MOVE;
