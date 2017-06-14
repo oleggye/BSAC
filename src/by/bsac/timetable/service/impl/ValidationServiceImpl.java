@@ -77,7 +77,25 @@ public class ValidationServiceImpl implements IValidationService {
 		}
 	}
 
+	@Override
+	public void validateClassroom(Classroom classroom) throws ServiceValidationException {
+		short number = classroom.getNumber();
+		if (Checker.isNumberInvalid(number)) {
+			throw new ServiceValidationException("Не верно задан номер аудитории: " + number);
+		}
+		byte building = classroom.getBuilding();
+		if (Checker.isBuildingInvalid(building)) {
+			throw new ServiceValidationException("Не верно задан номер корпуса: " + number);
+		}
+	}
+
 	private static class Checker {
+
+		private static final short LOW_BUILDIN_NUMBER_BOUND = 0;
+		private static final short TOP_BUILDIN_NUMBER_BOUND = 2;
+
+		private static final short LOW_CLASSROOM_NUMBER_BOUND = 0;
+		private static final short TOP_CLASSROOM_NUMBER_BOUND = 500;
 
 		static boolean isDatesInvalid(Date dateFrom, Date dateTo) {
 
@@ -125,5 +143,18 @@ public class ValidationServiceImpl implements IValidationService {
 			}
 			return false;
 		}
+
+		static boolean isBuildingInvalid(byte building) {
+			if (building <= LOW_BUILDIN_NUMBER_BOUND || building > TOP_BUILDIN_NUMBER_BOUND)
+				return true;
+			return false;
+		}
+
+		static boolean isNumberInvalid(short number) {
+			if (number <= LOW_CLASSROOM_NUMBER_BOUND || number > TOP_CLASSROOM_NUMBER_BOUND)
+				return true;
+			return false;
+		}
 	}
+
 }

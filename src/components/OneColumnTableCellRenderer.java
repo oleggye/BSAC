@@ -2,10 +2,17 @@ package components;
 
 import java.awt.Component;
 
+import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
 public class OneColumnTableCellRenderer extends DefaultTableCellRenderer {
+
+	private static final long serialVersionUID = 1L;
+
+	public OneColumnTableCellRenderer() {
+		this.setHorizontalAlignment(JLabel.CENTER);
+	}
 
 	@Override
 	protected void setValue(Object value) {

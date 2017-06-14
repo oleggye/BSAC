@@ -8,29 +8,38 @@ import by.bsac.timetable.dao.factory.DAOFactory;
 import by.bsac.timetable.hibernateFiles.entity.Classroom;
 import by.bsac.timetable.hibernateFiles.entity.Group;
 import by.bsac.timetable.service.IClassroomService;
+import by.bsac.timetable.service.IValidationService;
 import by.bsac.timetable.service.exception.ServiceException;
+import by.bsac.timetable.service.exception.ServiceValidationException;
+import by.bsac.timetable.service.factory.impl.ServiceFactory;
 
 public class ClassroomServiceImpl implements IClassroomService {
 
 	@Override
-	public void addClassroom(Classroom classroom) throws ServiceException {
+	public void addClassroom(Classroom classroom) throws ServiceException, ServiceValidationException {
+		IValidationService service = ServiceFactory.getInstance().getValidationService();
+		service.validateClassroom(classroom);
+
 		DAOFactory factory = DAOFactory.getInstance();
 
 		try {
 			factory.getClassroomDAO().add(classroom);
 		} catch (DAOException e) {
-			throw new ServiceException("Ошибка при удалении аудиторий", e);
+			throw new ServiceException("Ошибка при добавлении аудиторий", e);
 		}
 	}
 
 	@Override
-	public void updateClassroom(Classroom classroom) throws ServiceException {
+	public void updateClassroom(Classroom classroom) throws ServiceException, ServiceValidationException {
+		IValidationService service = ServiceFactory.getInstance().getValidationService();
+		service.validateClassroom(classroom);
+
 		DAOFactory factory = DAOFactory.getInstance();
 
 		try {
 			factory.getClassroomDAO().update(classroom);
 		} catch (DAOException e) {
-			throw new ServiceException("Ошибка при удалении аудиторий", e);
+			throw new ServiceException("Ошибка при обновлении аудиторий", e);
 		}
 	}
 

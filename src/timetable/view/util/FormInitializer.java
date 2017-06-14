@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.util.Date;
 import java.util.List;
-import java.util.Vector;
-
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -20,6 +18,7 @@ import javax.swing.table.DefaultTableModel;
 
 import by.bsac.timetable.hibernateFiles.HibernateUtil;
 import by.bsac.timetable.hibernateFiles.entity.Chair;
+import by.bsac.timetable.hibernateFiles.entity.Classroom;
 import by.bsac.timetable.hibernateFiles.entity.Faculty;
 import by.bsac.timetable.hibernateFiles.entity.Group;
 import by.bsac.timetable.hibernateFiles.entity.Record;
@@ -27,10 +26,10 @@ import by.bsac.timetable.service.exception.ServiceException;
 import by.bsac.timetable.service.factory.IServiceFactory;
 import by.bsac.timetable.service.factory.ServiceFactoryName;
 import by.bsac.timetable.service.factory.ServiceFactoryProvider;
+import components.IName;
 import components.MyComboBoxModel;
 import components.OneColumnTableModel;
 import supportClasses.DateUtil;
-import supportClasses.GetNamesClass;
 import supportClasses.SupportClass;
 import supportClasses.VerticalLabelUI;
 import tableClasses.TablesArray;
@@ -187,13 +186,7 @@ public class FormInitializer {
 			IServiceFactory factory = ServiceFactoryProvider.getInstance().getServiceFactory(ServiceFactoryName.CHOKE);
 			List<Faculty> facultyList = factory.getFacultyService().getAllFaculties();
 
-			if (!facultyList.isEmpty()) {
-
-				DefaultTableModel tModel = new OneColumnTableModel<Faculty>(Faculty.class, facultyList,
-						"Список факультетов");
-				table.setModel(tModel);
-				SupportClass.setHorizontalAlignmentToTable(table);
-			}
+			initTable(table, facultyList, Faculty.class, "Список факультетов");
 		} finally {
 			HibernateUtil.closeSession();
 		}
@@ -205,14 +198,31 @@ public class FormInitializer {
 			IServiceFactory factory = ServiceFactoryProvider.getInstance().getServiceFactory(ServiceFactoryName.CHOKE);
 			List<Chair> chairList = factory.getChairService().getAllChair();
 
-			if (!chairList.isEmpty()) {
-
-				DefaultTableModel tModel = new OneColumnTableModel<Chair>(Chair.class, chairList, "Список кафедр");
-				table.setModel(tModel);
-				SupportClass.setHorizontalAlignmentToTable(table);
-			}
+			initTable(table, chairList, Chair.class, "Список кафедр");
 		} finally {
 			HibernateUtil.closeSession();
+		}
+	}
+
+	public static void initClassroomTable(JTable table) throws ServiceException {
+		HibernateUtil.getSession();
+		try {
+			IServiceFactory factory = ServiceFactoryProvider.getInstance().getServiceFactory(ServiceFactoryName.CHOKE);
+			List<Classroom> classroomList = factory.getClassroomService().getClassroomList();
+
+			initTable(table, classroomList, Classroom.class, "Список аудиторий");
+		} finally {
+			HibernateUtil.closeSession();
+		}
+	}
+
+	private static <E> void initTable(JTable table, List<? extends IName> list, Class<E> clazz, String tableTitle) {
+
+		if (!list.isEmpty()) {
+
+			DefaultTableModel tModel = new OneColumnTableModel<E>(clazz, list, tableTitle);
+			table.setModel(tModel);
+			SupportClass.setHorizontalAlignmentToTable(table);
 		}
 	}
 }

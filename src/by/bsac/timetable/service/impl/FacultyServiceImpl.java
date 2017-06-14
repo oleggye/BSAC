@@ -24,7 +24,7 @@ public class FacultyServiceImpl implements IFacultyService {
 		try {
 			factory.getFacultyDAO().add(faculty);
 		} catch (DAOException e) {
-			throw new ServiceException("Ошибка при вставке", e);
+			throw new ServiceException("Ошибка при добавлении факультета", e);
 		}
 	}
 

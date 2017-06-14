@@ -159,7 +159,7 @@ public class MainForm {
 
 		JMenuItem changeChairMenuItem = new JMenuItem("Редактирование кафедр");
 		changeChairMenuItem.addActionListener((ActionEvent e) -> {
-			FacultyEditForm dialog = new FacultyEditForm();
+			ChairEditForm dialog = new ChairEditForm();
 			dialog.setVisible(true);
 			facultyComboBox.setSelectedIndex(facultyComboBox.getItemCount() - 1 - facultyComboBox.getSelectedIndex());
 			/* очищаем данные во всех таблицах */
@@ -188,9 +188,15 @@ public class MainForm {
 		menuItem_2.addActionListener((ActionEvent e) -> {
 			EditForm edf = new EditForm(mainFrame, 2, 3, educationLevel);
 			edf.setVisible(true);
-
 		});
 		mnNewMenu.add(menuItem_2);
+
+		JMenuItem changeClassroomItem = new JMenuItem("Редактирование аудиторий");
+		changeClassroomItem.addActionListener((ActionEvent e) -> {
+			ClassroomEditForm edf = new ClassroomEditForm();
+			edf.setVisible(true);
+		});
+		mnNewMenu.add(changeClassroomItem);
 
 		JMenu mnNewMenu_1 = new JMenu("О программе");
 		mnNewMenu_1.addMouseListener(new java.awt.event.MouseAdapter() {

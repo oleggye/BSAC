@@ -81,6 +81,9 @@ public class ChairEditForm extends JDialog {
 		JButton editButton = new JButton("Изменить");
 		editButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
+		JButton deleteButton = new JButton("Удалить");
+		deleteButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+
 		JTextArea textField = new JTextArea(1, 1);
 		textField.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
@@ -108,13 +111,44 @@ public class ChairEditForm extends JDialog {
 					request.putParam("chair", chair);
 					command.execute(request);
 
-				} catch (CommandException ex) {
+					FormInitializer.initChairTable(table);
+
+				} catch (CommandException | ServiceException ex) {
 					Logger.getLogger(ServiceEditFormTest.class.getName()).log(Level.SEVERE, null, ex);
 					JOptionPane.showMessageDialog(getContentPane(), ex.getCause().getMessage());
 				} finally {
 					editButton.setEnabled(true);
+					resetComponents(editButton, deleteButton, textField);
 				}
 
+			}
+		});
+
+		deleteButton.setBounds(394, 206, 89, 23);
+		contentPanel.add(deleteButton);
+		deleteButton.setVisible(false);
+		deleteButton.addActionListener(new java.awt.event.ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					deleteButton.setEnabled(false);
+
+					ICommand command = CommandProvider.getInstance().getCommand(ActionMode.Delete_Chair);
+					Request request = new Request();
+					request.putParam("chair", chair);
+					command.execute(request);
+
+					FormInitializer.initChairTable(table);
+
+				} catch (CommandException | ServiceException ex) {
+					Logger.getLogger(ServiceEditFormTest.class.getName()).log(Level.SEVERE, null, ex);
+					JOptionPane.showMessageDialog(getContentPane(), ex.getCause().getMessage());
+
+				} finally {
+					deleteButton.setEnabled(true);
+					resetComponents(editButton, deleteButton, textField);
+				}
 			}
 		});
 
@@ -136,12 +170,14 @@ public class ChairEditForm extends JDialog {
 					request.putParam("chair", chair);
 					command.execute(request);
 
-				} catch (CommandException ex) {
+					FormInitializer.initChairTable(table);
+
+				} catch (CommandException | ServiceException ex) {
 					Logger.getLogger(ServiceEditFormTest.class.getName()).log(Level.SEVERE, null, ex);
 					JOptionPane.showMessageDialog(getContentPane(), ex.getCause().getMessage());
 				} finally {
-					editButton.setVisible(false);
 					addButton.setEnabled(true);
+					resetComponents(editButton, deleteButton, textField);
 				}
 			}
 		});
@@ -169,6 +205,7 @@ public class ChairEditForm extends JDialog {
 
 					textField.setText(chair.getName());
 					editButton.setVisible(true);
+					deleteButton.setVisible(true);
 				}
 			}
 		});
@@ -192,5 +229,11 @@ public class ChairEditForm extends JDialog {
 				});
 			}
 		}
+	}
+
+	private void resetComponents(JButton editButton, JButton deleteButton, JTextArea textField) {
+		editButton.setVisible(false);
+		deleteButton.setVisible(false);
+		textField.setText("");
 	}
 }

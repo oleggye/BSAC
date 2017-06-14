@@ -23,7 +23,7 @@ public class ChairServiceImpl implements IChairService {
 		try {
 			factory.getChairDAO().add(chair);
 		} catch (DAOException e) {
-			throw new ServiceException("Ошибка при вставке", e);
+			throw new ServiceException("Ошибка при добавлении кафедры", e);
 		}
 	}
 
@@ -37,7 +37,7 @@ public class ChairServiceImpl implements IChairService {
 		try {
 			factory.getChairDAO().update(chair);
 		} catch (DAOException e) {
-			throw new ServiceException("Ошибка при обновлении", e);
+			throw new ServiceException("Ошибка при обновлении кафедры", e);
 		}
 	}
 

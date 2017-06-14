@@ -14,7 +14,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
@@ -22,8 +21,8 @@ import by.bsac.timetable.command.CommandProvider;
 import by.bsac.timetable.command.ICommand;
 import by.bsac.timetable.command.exception.CommandException;
 import by.bsac.timetable.command.util.Request;
-import by.bsac.timetable.hibernateFiles.entity.Faculty;
-import by.bsac.timetable.hibernateFiles.entity.builder.FacultyBuilder;
+import by.bsac.timetable.hibernateFiles.entity.Classroom;
+import by.bsac.timetable.hibernateFiles.entity.builder.ClassroomBuilder;
 import by.bsac.timetable.service.exception.ServiceException;
 import components.OneColumnTable;
 import components.OneColumnTableCellRenderer;
@@ -31,19 +30,20 @@ import supportClasses.SupportClass;
 import timetable.util.ActionMode;
 import timetable.view.test.ServiceEditFormTest;
 import timetable.view.util.FormInitializer;
+import java.awt.Color;
 
-public class FacultyEditForm extends JDialog {
+public class ClassroomEditForm extends JDialog {
 	private static final long serialVersionUID = 1L;
 
 	private JTable table;
-	private Faculty faculty;
+	private Classroom classroom;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main() {
 		try {
-			FacultyEditForm dialog = new FacultyEditForm();
+			ClassroomEditForm dialog = new ClassroomEditForm();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -51,7 +51,7 @@ public class FacultyEditForm extends JDialog {
 		}
 	}
 
-	public FacultyEditForm() {
+	public ClassroomEditForm() {
 
 		setBounds(100, 100, 590, 380);
 		setResizable(false);
@@ -66,7 +66,7 @@ public class FacultyEditForm extends JDialog {
 			@Override
 			public void windowOpened(java.awt.event.WindowEvent evt) {
 				try {
-					FormInitializer.initFacultyTable(table);
+					FormInitializer.initClassroomTable(table);
 				} catch (ServiceException ex) {
 					Logger.getLogger(ServiceEditFormTest.class.getName()).log(Level.SEVERE, null, ex);
 					JOptionPane.showMessageDialog(getContentPane(), ex.getCause().getMessage());
@@ -76,7 +76,7 @@ public class FacultyEditForm extends JDialog {
 
 		JLabel label = new JLabel("Редактирование/Добавление");
 		label.setFont(new Font("Tahoma", Font.BOLD, 14));
-		label.setBounds(323, 56, 220, 18);
+		label.setBounds(319, 39, 220, 18);
 		contentPanel.add(label);
 
 		JButton editButton = new JButton("Изменить");
@@ -85,17 +85,33 @@ public class FacultyEditForm extends JDialog {
 		JButton deleteButton = new JButton("Удалить");
 		deleteButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
-		JTextArea textField = new JTextArea(1, 1);
-		textField.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		JTextField numberField = new JTextField();
+		contentPanel.add(numberField);
+		numberField.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		numberField.setBounds(339, 117, 94, 26);
 
-		JScrollPane scrollPane = new JScrollPane(textField);
-		scrollPane.setBounds(323, 85, 220, 46);
-		contentPanel.add(scrollPane);
+		JLabel buildingLabel = new JLabel("<html>Номер<br>корпуса</html>");
+		buildingLabel.setForeground(Color.BLUE);
+		buildingLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
+		buildingLabel.setBounds(470, 68, 79, 38);
+		contentPanel.add(buildingLabel);
 
-		textField.setColumns(1);
+		JTextField buildingField = new JTextField();
+		buildingField.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		buildingField.setColumns(1);
+		buildingField.setBounds(470, 117, 65, 26);
+		contentPanel.add(buildingField);
+
+		JLabel label_1 = new JLabel("<html>Номер<br>аудитории</html>");
+		label_1.setForeground(new Color(0, 128, 0));
+		label_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		label_1.setBounds(341, 68, 79, 38);
+		contentPanel.add(label_1);
+
+		numberField.setColumns(1);
 
 		editButton.setVisible(false);
-		editButton.setBounds(323, 142, 100, 26);
+		editButton.setBounds(333, 169, 100, 26);
 		contentPanel.add(editButton);
 
 		editButton.addActionListener(new java.awt.event.ActionListener() {
@@ -104,22 +120,27 @@ public class FacultyEditForm extends JDialog {
 
 				try {
 					editButton.setEnabled(false);
+					byte building = Byte.valueOf(buildingField.getText());
+					short number = Short.valueOf(numberField.getText());
 
-					faculty.setNameFaculty(textField.getText());
+					classroom.setBuilding(building);
+					classroom.setNumber(number);
 
-					ICommand command = CommandProvider.getInstance().getCommand(ActionMode.Update_Faculty);
+					ICommand command = CommandProvider.getInstance().getCommand(ActionMode.Update_Classroom);
 					Request request = new Request();
-					request.putParam("faculty", faculty);
+					request.putParam("classroom", classroom);
 					command.execute(request);
 
-					FormInitializer.initFacultyTable(table);
+					FormInitializer.initClassroomTable(table);
 
 				} catch (CommandException | ServiceException ex) {
 					Logger.getLogger(ServiceEditFormTest.class.getName()).log(Level.SEVERE, null, ex);
 					JOptionPane.showMessageDialog(getContentPane(), ex.getCause().getMessage());
+				} catch (NumberFormatException ex) {
+					JOptionPane.showMessageDialog(getContentPane(), "Введены не верные числа");
 				} finally {
 					editButton.setEnabled(true);
-					resetComponents(editButton, deleteButton, textField);
+					resetComponents(editButton, deleteButton, numberField, buildingField);
 				}
 
 			}
@@ -135,19 +156,19 @@ public class FacultyEditForm extends JDialog {
 				try {
 					deleteButton.setEnabled(false);
 
-					ICommand command = CommandProvider.getInstance().getCommand(ActionMode.Delete_Faculty);
+					ICommand command = CommandProvider.getInstance().getCommand(ActionMode.Delete_Classroom);
 					Request request = new Request();
-					request.putParam("faculty", faculty);
+					request.putParam("classroom", classroom);
 					command.execute(request);
 
-					FormInitializer.initFacultyTable(table);
+					FormInitializer.initClassroomTable(table);
 
 				} catch (CommandException | ServiceException ex) {
 					Logger.getLogger(ServiceEditFormTest.class.getName()).log(Level.SEVERE, null, ex);
 					JOptionPane.showMessageDialog(getContentPane(), ex.getCause().getMessage());
 				} finally {
 					deleteButton.setEnabled(true);
-					resetComponents(editButton, deleteButton, textField);
+					resetComponents(editButton, deleteButton, numberField, buildingField);
 				}
 			}
 		});
@@ -155,7 +176,7 @@ public class FacultyEditForm extends JDialog {
 		JButton addButton = new JButton("Добавить");
 		addButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
-		addButton.setBounds(438, 142, 105, 26);
+		addButton.setBounds(444, 169, 105, 26);
 		contentPanel.add(addButton);
 
 		addButton.addActionListener(new java.awt.event.ActionListener() {
@@ -163,21 +184,26 @@ public class FacultyEditForm extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					addButton.setEnabled(false);
-					faculty = new FacultyBuilder().buildName(textField.getText()).build();
+					byte building = Byte.valueOf(buildingField.getText());
+					short number = Short.valueOf(numberField.getText());
 
-					ICommand command = CommandProvider.getInstance().getCommand(ActionMode.Add_Faculty);
+					classroom = new ClassroomBuilder().buildBuilding(building).buildNumber(number).build();
+
+					ICommand command = CommandProvider.getInstance().getCommand(ActionMode.Add_Classroom);
 					Request request = new Request();
-					request.putParam("faculty", faculty);
+					request.putParam("classroom", classroom);
 					command.execute(request);
 
-					FormInitializer.initFacultyTable(table);
+					FormInitializer.initClassroomTable(table);
 
 				} catch (CommandException | ServiceException ex) {
 					Logger.getLogger(ServiceEditFormTest.class.getName()).log(Level.SEVERE, null, ex);
 					JOptionPane.showMessageDialog(getContentPane(), ex.getCause().getMessage());
+				} catch (NumberFormatException ex) {
+					JOptionPane.showMessageDialog(getContentPane(), "Введены не верные числа");
 				} finally {
 					addButton.setEnabled(true);
-					resetComponents(editButton, deleteButton, textField);
+					resetComponents(editButton, deleteButton, numberField, buildingField);
 				}
 			}
 		});
@@ -200,10 +226,11 @@ public class FacultyEditForm extends JDialog {
 				int columnIndex = table.getSelectedColumn();
 				int rowIndex = table.getSelectedRow();
 				if (rowIndex >= 0) {
-					faculty = (Faculty) table.getModel().getValueAt(rowIndex, columnIndex);
-					System.out.println(faculty);
+					classroom = (Classroom) table.getModel().getValueAt(rowIndex, columnIndex);
+					System.out.println(classroom);
 
-					textField.setText(faculty.getName());
+					buildingField.setText(String.valueOf(classroom.getBuilding()));
+					numberField.setText(String.valueOf(classroom.getNumber()));
 					editButton.setVisible(true);
 					deleteButton.setVisible(true);
 				}
@@ -231,9 +258,11 @@ public class FacultyEditForm extends JDialog {
 		}
 	}
 
-	private void resetComponents(JButton editButton, JButton deleteButton, JTextArea textField) {
+	private void resetComponents(JButton editButton, JButton deleteButton, JTextField numberTextFiled,
+			JTextField buildingTextFiled) {
 		editButton.setVisible(false);
 		deleteButton.setVisible(false);
-		textField.setText("");
+		numberTextFiled.setText("");
+		buildingTextFiled.setText("");
 	}
 }

@@ -3,7 +3,6 @@ package supportClasses;
 import tableClasses.TablesArray;
 import tableClasses.ArrayPosition;
 
-import java.awt.Component;
 import java.awt.Window;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -25,7 +24,6 @@ import by.bsac.timetable.hibernateFiles.entity.Subject;
 import by.bsac.timetable.hibernateFiles.entity.SubjectFor;
 import by.bsac.timetable.service.exception.ServiceException;
 import by.bsac.timetable.service.factory.impl.ServiceFactory;
-import timetable.util.LessonFor;
 import timetable.view.MainForm;
 
 public class SupportClass {
