@@ -7,7 +7,7 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import components.IName;
 
-public class MyTableCellRenderer extends DefaultTableCellRenderer {
+class MyTableCellRenderer extends DefaultTableCellRenderer {
 
 	private static final long serialVersionUID = 1L;
 

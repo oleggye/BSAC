@@ -304,8 +304,7 @@ public class Record implements java.io.Serializable, Cloneable, IName {
 
 	@Override
 	public String getName() {
-		// return getSubjAndSubjType(false);
-		return "=1";
+		return getSubjAndSubjType(false);
 	}
 
 	public String printRecord() {

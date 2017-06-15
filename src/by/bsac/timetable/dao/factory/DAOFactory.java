@@ -4,6 +4,7 @@ import by.bsac.timetable.dao.ICancellationDAO;
 import by.bsac.timetable.dao.IChairDAO;
 import by.bsac.timetable.dao.IClassroomDAO;
 import by.bsac.timetable.dao.IFacultyDAO;
+import by.bsac.timetable.dao.IFlowDAO;
 import by.bsac.timetable.dao.IGroupDAO;
 import by.bsac.timetable.dao.ILecturerDAO;
 import by.bsac.timetable.dao.IRecordDAO;
@@ -12,6 +13,7 @@ import by.bsac.timetable.dao.Impl.CancellationDAOImpl;
 import by.bsac.timetable.dao.Impl.ChairDAOImpl;
 import by.bsac.timetable.dao.Impl.ClassroomDAOImpl;
 import by.bsac.timetable.dao.Impl.FacultyDAOImpl;
+import by.bsac.timetable.dao.Impl.FlowDAOImpl;
 import by.bsac.timetable.dao.Impl.GroupDAOImpl;
 import by.bsac.timetable.dao.Impl.LecturerDAOImpl;
 import by.bsac.timetable.dao.Impl.RecordDAOImpl;
@@ -28,6 +30,7 @@ public class DAOFactory {
 	private final IRecordDAO RecordDAO = new RecordDAOImpl();
 	private final ISubjectDAO SubjectDAO = new SubjectDAOImpl();
 	private final IClassroomDAO classroomDAO = new ClassroomDAOImpl();
+	private final IFlowDAO flowDAO = new FlowDAOImpl();
 	private final ICancellationDAO cancellationDAO = new CancellationDAOImpl();
 
 	public static DAOFactory getInstance() {
@@ -64,6 +67,10 @@ public class DAOFactory {
 
 	public ICancellationDAO getCancellationDAO() {
 		return cancellationDAO;
+	}
+
+	public IFlowDAO getFlowDAO() {
+		return flowDAO;
 	}
 
 }

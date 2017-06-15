@@ -11,14 +11,24 @@ public class MyComboBox<E> extends JComboBox<E> {
 
 	public MyComboBox() {
 		this.setRenderer(new MyRenderer<>());
+		this.setToolTipText("");
 	}
 
 	public MyComboBox(ListCellRenderer<E> renderer) {
 		this.setRenderer(renderer);
+		this.setToolTipText("");
 	}
-	
+
 	@Override
 	public String getToolTipText(MouseEvent e) {
-		return this.getSelectedItem().toString();
+		String tip;
+
+		Object selectedItem = this.getSelectedItem();
+		if (selectedItem instanceof IName) {
+			tip = ((IName) selectedItem).getName();
+		} else {
+			tip = selectedItem.toString();
+		}
+		return tip;
 	}
 }

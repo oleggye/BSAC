@@ -331,4 +331,37 @@ public class SupportClass {
 		}
 		return subjCol;
 	}
+
+	public static String makeTipForRecord(Record record) {
+		// формат: Название предмета (тип), Преподаватель, [аудитория]
+		// 28.10.16 задал, чтобы отображались аббревиатуры, вместо целых
+		// названий
+
+		byte subjType = record.getSubjectType().getId();
+
+		String subjectName = record.getSubject().getName();
+
+		String lectName = record.getLecturer().getName();
+
+		String classRoom = record.getClassroom().getName();
+
+		switch (subjType) {
+		case 1:
+			return String.format("%s(%s), %s [%s]", subjectName, "Лекция", lectName, classRoom);
+		case 2:
+			return String.format("%s(%s), %s [%s]", subjectName, "ЛР", lectName, classRoom);
+		case 3:
+			return String.format("%s(%s), %s [%s]", subjectName, "ПЗ", lectName, classRoom);
+		case 4:
+			return String.format("%s(%s), %s [%s]", subjectName, "Консультация", lectName, classRoom);
+		case 5:
+			return String.format("%s(%s), %s [%s]", subjectName, "Экзамен", lectName, classRoom);
+		case 6:
+			return String.format("%s(%s), %s [%s]", subjectName, "Учебное занятие", lectName, classRoom);
+		case 7:
+			return String.format("%s(%s), %s [%s]", subjectName, "Переезд", lectName, classRoom);
+		default:
+			return String.format("%s(%s), %s [%s]", subjectName, "Лекция", lectName, classRoom);
+		}
+	}
 }

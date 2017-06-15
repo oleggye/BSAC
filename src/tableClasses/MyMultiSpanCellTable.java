@@ -4,21 +4,14 @@ import by.bsac.component.multiSpanCellTable.AttributiveCellTableModel;
 import by.bsac.component.multiSpanCellTable.CellSpan;
 import by.bsac.component.multiSpanCellTable.MultiSpanCellTable;
 import by.bsac.timetable.hibernateFiles.entity.Record;
+import components.IName;
 
 import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
-
 import supportClasses.SupportClass;
-import supportClasses.TableTips;
 
-/**
- *
- * @author hello
- */
 public class MyMultiSpanCellTable extends MultiSpanCellTable {
 	private static final long serialVersionUID = 1L;
 
@@ -77,17 +70,33 @@ public class MyMultiSpanCellTable extends MultiSpanCellTable {
 		}
 	}
 
-	// public String getToolTipText(MouseEvent e) {//подсказки
-	// String tip = null;
-	// java.awt.Point p = e.getPoint();
-	// int rowIndex = rowAtPoint(p);
-	// int colIndex = columnAtPoint(p);
-	// int realColumnIndex = convertColumnIndexToModel(colIndex);
-	//
-	// if (realColumnIndex == 1 || realColumnIndex == 2) {
-	// tip = TableTips.getTextForTip(this, colIndex, rowIndex);
-	// //tip = (String) getValueAt(rowIndex, colIndex);
-	// }
-	// return tip;
-	// }
+	@Override
+	public String getToolTipText(MouseEvent event) {
+		String tip = null;
+		java.awt.Point p = event.getPoint();
+		int rowIndex = rowAtPoint(p);
+		int colIndex = columnAtPoint(p);
+		int realColumnIndex = convertColumnIndexToModel(colIndex);
+
+		Object value = getValueAt(rowIndex, colIndex);
+
+		if ((realColumnIndex == 1 || realColumnIndex == 2) && value != null) {
+
+			if (value != null)
+				if (value instanceof IName) {
+					if (value instanceof Record) {
+						tip = SupportClass.makeTipForRecord((Record) value);
+					} else {
+						tip = ((IName) value).getName();
+					}
+
+				} else {
+					value.toString();
+				}
+
+		} else {
+			tip = super.getToolTipText(event);
+		}
+		return tip;
+	}
 }

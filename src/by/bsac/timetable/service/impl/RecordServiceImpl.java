@@ -159,7 +159,7 @@ public class RecordServiceImpl implements IRecordService {
 
 		List<Record> recordList = new LinkedList<>();
 
-		List<Group> groupList = factory.getGroupDAO().getGroupByFlow(addRecord.getGroup().getFlow());
+		List<Group> groupList = factory.getGroupDAO().getGroupListByFlow(addRecord.getGroup().getFlow());
 		for (Group group : groupList) {
 			addRecord.setGroup(group);
 			// factory.getRecordDAO().add(addRecord);
@@ -177,7 +177,7 @@ public class RecordServiceImpl implements IRecordService {
 			throws DAOException, ServiceException, ServiceValidationException {
 		DAOFactory factory = DAOFactory.getInstance();
 
-		List<Group> groupList = factory.getGroupDAO().getGroupByFlow(initialRecord.getGroup().getFlow());
+		List<Group> groupList = factory.getGroupDAO().getGroupListByFlow(initialRecord.getGroup().getFlow());
 		for (Group group : groupList) {
 			Record thisGroupRecord = factory.getRecordDAO().getRecordForGroupLikeThis(group, initialRecord);
 			if (thisGroupRecord != null) {
@@ -214,7 +214,7 @@ public class RecordServiceImpl implements IRecordService {
 		cancellation.setDateFrom(cancelRecord.getDateFrom());
 		cancellation.setDateTo(cancelRecord.getDateTo());
 
-		List<Group> groupList = factory.getGroupDAO().getGroupByFlow(initalRecord.getGroup().getFlow());
+		List<Group> groupList = factory.getGroupDAO().getGroupListByFlow(initalRecord.getGroup().getFlow());
 		for (Group group : groupList) {
 			Record thisGroupRecord = factory.getRecordDAO().getRecordForGroupLikeThis(group, initalRecord);
 			if (thisGroupRecord != null) {
@@ -227,7 +227,7 @@ public class RecordServiceImpl implements IRecordService {
 	private void deleteFlowRecord(Record initalRecord) throws DAOException {
 		DAOFactory factory = DAOFactory.getInstance();
 
-		List<Group> groupList = factory.getGroupDAO().getGroupByFlow(initalRecord.getGroup().getFlow());
+		List<Group> groupList = factory.getGroupDAO().getGroupListByFlow(initalRecord.getGroup().getFlow());
 		for (Group group : groupList) {
 			Record thisGroupRecord = factory.getRecordDAO().getRecordForGroupLikeThis(group, initalRecord);
 			if (thisGroupRecord != null) {

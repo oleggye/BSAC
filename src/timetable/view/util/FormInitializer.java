@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
@@ -20,9 +21,11 @@ import by.bsac.timetable.hibernateFiles.HibernateUtil;
 import by.bsac.timetable.hibernateFiles.entity.Chair;
 import by.bsac.timetable.hibernateFiles.entity.Classroom;
 import by.bsac.timetable.hibernateFiles.entity.Faculty;
+import by.bsac.timetable.hibernateFiles.entity.Flow;
 import by.bsac.timetable.hibernateFiles.entity.Group;
 import by.bsac.timetable.hibernateFiles.entity.Record;
 import by.bsac.timetable.service.exception.ServiceException;
+import by.bsac.timetable.service.exception.ServiceValidationException;
 import by.bsac.timetable.service.factory.IServiceFactory;
 import by.bsac.timetable.service.factory.ServiceFactoryName;
 import by.bsac.timetable.service.factory.ServiceFactoryProvider;
@@ -180,10 +183,17 @@ public class FormInitializer {
 		scrollPane.setRowHeaderView(leftPanel);
 	}
 
+	/**
+	 * Получаем коллецию всех факультетов, добавляем в модель и задаем её
+	 * переданной таблице
+	 * 
+	 * @param table
+	 * @throws ServiceException
+	 */
 	public static void initFacultyTable(JTable table) throws ServiceException {
 		HibernateUtil.getSession();
 		try {
-			IServiceFactory factory = ServiceFactoryProvider.getInstance().getServiceFactory(ServiceFactoryName.CHOKE);
+			IServiceFactory factory = ServiceFactoryProvider.getInstance().getServiceFactory();
 			List<Faculty> facultyList = factory.getFacultyService().getAllFaculties();
 
 			initTable(table, facultyList, Faculty.class, "Список факультетов");
@@ -192,10 +202,17 @@ public class FormInitializer {
 		}
 	}
 
+	/**
+	 * Получаем коллецию всех кафедр, добавляем в модель и задаем её переданной
+	 * таблице
+	 * 
+	 * @param table
+	 * @throws ServiceException
+	 */
 	public static void initChairTable(JTable table) throws ServiceException {
 		HibernateUtil.getSession();
 		try {
-			IServiceFactory factory = ServiceFactoryProvider.getInstance().getServiceFactory(ServiceFactoryName.CHOKE);
+			IServiceFactory factory = ServiceFactoryProvider.getInstance().getServiceFactory();
 			List<Chair> chairList = factory.getChairService().getAllChair();
 
 			initTable(table, chairList, Chair.class, "Список кафедр");
@@ -204,10 +221,17 @@ public class FormInitializer {
 		}
 	}
 
+	/**
+	 * Получаем аудиторий всех кафедр, добавляем в модель и задаем её переданной
+	 * таблице
+	 * 
+	 * @param table
+	 * @throws ServiceException
+	 */
 	public static void initClassroomTable(JTable table) throws ServiceException {
 		HibernateUtil.getSession();
 		try {
-			IServiceFactory factory = ServiceFactoryProvider.getInstance().getServiceFactory(ServiceFactoryName.CHOKE);
+			IServiceFactory factory = ServiceFactoryProvider.getInstance().getServiceFactory();
 			List<Classroom> classroomList = factory.getClassroomService().getClassroomList();
 
 			initTable(table, classroomList, Classroom.class, "Список аудиторий");
@@ -216,6 +240,32 @@ public class FormInitializer {
 		}
 	}
 
+	/**
+	 * Получаем коллецию всех потоков, добавляем в модель и задаем её переданной
+	 * таблице
+	 * 
+	 * @param table
+	 * @throws ServiceException
+	 */
+	public static void initFlowTable(JTable table) throws ServiceException {
+		HibernateUtil.getSession();
+		try {
+			IServiceFactory factory = ServiceFactoryProvider.getInstance().getServiceFactory();
+			List<Flow> flowList = factory.getFlowService().getFlowList();
+
+			initTable(table, flowList, Classroom.class, "Список потоков");
+		} finally {
+			HibernateUtil.closeSession();
+		}
+	}
+
+	/**
+	 * Generic-метод который задает модель составленной из списка переданной
+	 * таблице
+	 * 
+	 * @param table
+	 * @throws ServiceException
+	 */
 	private static <E> void initTable(JTable table, List<? extends IName> list, Class<E> clazz, String tableTitle) {
 
 		if (!list.isEmpty()) {
@@ -223,6 +273,36 @@ public class FormInitializer {
 			DefaultTableModel tModel = new OneColumnTableModel<E>(clazz, list, tableTitle);
 			table.setModel(tModel);
 			SupportClass.setHorizontalAlignmentToTable(table);
+		}
+	}
+
+	/**
+	 * Инициализирует преденный компонент списком групп переданного потока
+	 * 
+	 * @param groupInFlowTextArea
+	 * @param flow
+	 * @throws ServiceException
+	 * @throws ServiceValidationException
+	 */
+	public static void initFlowGroupTextArea(JTextArea groupInFlowTextArea, Flow flow)
+			throws ServiceException, ServiceValidationException {
+		HibernateUtil.getSession();
+		try {
+			IServiceFactory factory = ServiceFactoryProvider.getInstance().getServiceFactory();
+			List<Group> groupList = factory.getGroupService().getGroupListByFlow(flow);
+
+			if (!groupList.isEmpty()) {
+
+				for (int index = 0; index < groupList.size(); index++) {
+					groupInFlowTextArea.append(groupList.get(index).getName());
+					if (index != groupList.size() - 1) {
+						groupInFlowTextArea.append("\n");
+					}
+				}
+				groupInFlowTextArea.setVisible(true);
+			}
+		} finally {
+			HibernateUtil.closeSession();
 		}
 	}
 }

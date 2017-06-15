@@ -6,15 +6,19 @@ import java.util.Map;
 import by.bsac.timetable.command.impl.AddChair;
 import by.bsac.timetable.command.impl.AddClassroom;
 import by.bsac.timetable.command.impl.AddFaculty;
+import by.bsac.timetable.command.impl.AddFlow;
 import by.bsac.timetable.command.impl.AddRecord;
 import by.bsac.timetable.command.impl.CancelRecord;
 import by.bsac.timetable.command.impl.DeleteChair;
 import by.bsac.timetable.command.impl.DeleteClassroom;
 import by.bsac.timetable.command.impl.DeleteFaculty;
+import by.bsac.timetable.command.impl.DeleteFlow;
+import by.bsac.timetable.command.impl.GetFlowGroupList;
 import by.bsac.timetable.command.impl.GetGroupTimetable;
 import by.bsac.timetable.command.impl.UpdateChair;
 import by.bsac.timetable.command.impl.UpdateClassroom;
 import by.bsac.timetable.command.impl.UpdateFaculty;
+import by.bsac.timetable.command.impl.UpdateFlow;
 import by.bsac.timetable.command.impl.UpdateRecord;
 import timetable.util.ActionMode;
 
@@ -41,6 +45,10 @@ public class CommandProvider {
 		commandStore.put(ActionMode.Add_Classroom, new AddClassroom());
 		commandStore.put(ActionMode.Update_Classroom, new UpdateClassroom());
 		commandStore.put(ActionMode.Delete_Classroom, new DeleteClassroom());
+		commandStore.put(ActionMode.Add_Flow, new AddFlow());
+		commandStore.put(ActionMode.Update_Flow, new UpdateFlow());
+		commandStore.put(ActionMode.Get_Flow_Group_List, new GetFlowGroupList());
+		commandStore.put(ActionMode.Delete_Flow, new DeleteFlow());
 	}
 
 	public ICommand getCommand(ActionMode action) {

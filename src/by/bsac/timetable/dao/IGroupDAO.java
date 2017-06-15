@@ -27,5 +27,5 @@ public interface IGroupDAO {
 
 	public List<Group> getGroupListByFacultyAndEduLevel(Faculty faculty, byte eduLevel) throws DAOException;
 
-	public List<Group> getGroupByFlow(Flow flow) throws DAOException;
+	public List<Group> getGroupListByFlow(Flow flow) throws DAOException;
 }

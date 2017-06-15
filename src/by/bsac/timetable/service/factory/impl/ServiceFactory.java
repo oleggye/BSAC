@@ -3,6 +3,7 @@ package by.bsac.timetable.service.factory.impl;
 import by.bsac.timetable.service.IChairService;
 import by.bsac.timetable.service.IClassroomService;
 import by.bsac.timetable.service.IFacultyService;
+import by.bsac.timetable.service.IFlowService;
 import by.bsac.timetable.service.IGroupService;
 import by.bsac.timetable.service.ILecturerService;
 import by.bsac.timetable.service.IRecordService;
@@ -12,6 +13,7 @@ import by.bsac.timetable.service.factory.IServiceFactory;
 import by.bsac.timetable.service.impl.ChairServiceImpl;
 import by.bsac.timetable.service.impl.ClassroomServiceImpl;
 import by.bsac.timetable.service.impl.FacultyServiceImpl;
+import by.bsac.timetable.service.impl.FlowServiceImpl;
 import by.bsac.timetable.service.impl.GroupServiceImpl;
 import by.bsac.timetable.service.impl.LecturerServiceImpl;
 import by.bsac.timetable.service.impl.RecordServiceImpl;
@@ -33,8 +35,8 @@ public final class ServiceFactory implements IServiceFactory {
 	private final IClassroomService classroomService = new ClassroomServiceImpl();
 	private final ILecturerService lecturerService = new LecturerServiceImpl();
 	private final ISubjectService subjectService = new SubjectServiceImpl();
+	private final IFlowService flowService = new FlowServiceImpl();
 	private final IValidationService validationService = new ValidationServiceImpl();
-	
 
 	private ServiceFactory() {
 	}
@@ -73,5 +75,9 @@ public final class ServiceFactory implements IServiceFactory {
 
 	public IValidationService getValidationService() {
 		return validationService;
+	}
+
+	public IFlowService getFlowService() {
+		return flowService;
 	}
 }

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package by.bsac.timetable.service.impl;
 
 import java.util.List;
@@ -10,14 +5,21 @@ import java.util.List;
 import by.bsac.timetable.dao.exception.DAOException;
 import by.bsac.timetable.dao.factory.DAOFactory;
 import by.bsac.timetable.hibernateFiles.entity.Faculty;
+import by.bsac.timetable.hibernateFiles.entity.Flow;
 import by.bsac.timetable.hibernateFiles.entity.Group;
 import by.bsac.timetable.service.IGroupService;
+import by.bsac.timetable.service.IValidationService;
 import by.bsac.timetable.service.exception.ServiceException;
+import by.bsac.timetable.service.exception.ServiceValidationException;
+import by.bsac.timetable.service.factory.impl.ServiceFactory;
 
 public class GroupServiceImpl implements IGroupService {
 
 	@Override
-	public void addGroup(Group group) throws ServiceException {
+	public void addGroup(Group group) throws ServiceException, ServiceValidationException {
+		IValidationService service = ServiceFactory.getInstance().getValidationService();
+		service.validateGroup(group);
+
 		DAOFactory factory = DAOFactory.getInstance();
 
 		try {
@@ -28,7 +30,10 @@ public class GroupServiceImpl implements IGroupService {
 	}
 
 	@Override
-	public void updateGroup(Group group) throws ServiceException {
+	public void updateGroup(Group group) throws ServiceException, ServiceValidationException {
+		IValidationService service = ServiceFactory.getInstance().getValidationService();
+		service.validateGroup(group);
+
 		DAOFactory factory = DAOFactory.getInstance();
 
 		try {
@@ -102,6 +107,22 @@ public class GroupServiceImpl implements IGroupService {
 			groupList = factory.getGroupDAO().getGroupListByFacultyAndEduLevel(faculty, eduLevel);
 		} catch (DAOException e) {
 			throw new ServiceException("Ошибка при получении списка групп факультета для уровня образования", e);
+		}
+		return groupList;
+	}
+
+	@Override
+	public List<Group> getGroupListByFlow(Flow flow) throws ServiceException, ServiceValidationException {
+		IValidationService service = ServiceFactory.getInstance().getValidationService();
+		service.validateFlow(flow);
+
+		List<Group> groupList;
+		DAOFactory factory = DAOFactory.getInstance();
+
+		try {
+			groupList = factory.getGroupDAO().getGroupListByFlow(flow);
+		} catch (DAOException e) {
+			throw new ServiceException("Ошибка при получении списка групп потока", e);
 		}
 		return groupList;
 	}

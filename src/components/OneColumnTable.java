@@ -8,6 +8,8 @@ import javax.swing.table.TableCellRenderer;
 
 public class OneColumnTable extends JTable {
 
+	private static final long serialVersionUID = 1L;
+
 	private DefaultTableCellRenderer renderer;
 
 	public OneColumnTable() {

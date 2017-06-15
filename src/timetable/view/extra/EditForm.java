@@ -1,4 +1,4 @@
-package timetable.view.test;
+package timetable.view.extra;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -7,8 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 
 import javax.swing.JButton;
@@ -23,6 +21,9 @@ import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import by.bsac.timetable.hibernateFiles.entity.Chair;
 import by.bsac.timetable.hibernateFiles.entity.Faculty;
 import by.bsac.timetable.hibernateFiles.entity.Group;
@@ -33,6 +34,7 @@ import by.bsac.timetable.service.exception.ServiceValidationException;
 import by.bsac.timetable.service.factory.IServiceFactory;
 import by.bsac.timetable.service.factory.ServiceFactoryName;
 import by.bsac.timetable.service.factory.ServiceFactoryProvider;
+import components.MyComboBox;
 import supportClasses.CheckGeneralization;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -40,12 +42,12 @@ import javax.swing.JOptionPane;
 import supportClasses.SupportClass;
 import supportClasses.GetNamesClass;
 
-public class ServiceEditFormTest extends JDialog {
+public class EditForm extends JDialog {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
+
+	private static final Logger LOGGER = LogManager.getLogger(EditForm.class.getName());
+
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textField;// текстовое поле
 	private JTextField textFieldForAbbr;// специально для аббревиатур
@@ -75,15 +77,15 @@ public class ServiceEditFormTest extends JDialog {
 	 */
 	public static void main() {
 		try {
-			ServiceEditFormTest dialog = new ServiceEditFormTest(null, 1, 2, (byte) 1);
+			EditForm dialog = new EditForm(null, 1, 2, (byte) 1);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
-			Logger.getLogger(ServiceEditFormTest.class.getName()).log(Level.SEVERE, null, e);
+			LOGGER.error("Ошибка при загрузке класса EditForm", e);
 		}
 	}
 
-	public ServiceEditFormTest() {
+	public EditForm() {
 	}
 
 	/**
@@ -94,7 +96,7 @@ public class ServiceEditFormTest extends JDialog {
 	 * @param tableMode
 	 * @param edu_level
 	 */
-	public ServiceEditFormTest(JFrame parent, int cBoxMode, int tableMode, byte edu_level) {
+	public EditForm(JFrame parent, int cBoxMode, int tableMode, byte edu_level) {
 		super(parent, true);
 		this.cBoxMode = cBoxMode;
 		this.tableMode = tableMode;
@@ -114,30 +116,22 @@ public class ServiceEditFormTest extends JDialog {
 					chooseCBByMode();
 					chooseTableByMode();
 				} catch (ServiceException ex) {
-					Logger.getLogger(ServiceEditFormTest.class.getName()).log(Level.SEVERE, null, ex);
+					LOGGER.error(ex.getCause().getMessage(), ex);
 					JOptionPane.showMessageDialog(getContentPane(), ex);
 				}
 			}
 		});
 
+		lblNewLabel = new JLabel("New label");
+
+		lblNewLabel.setBounds(400, 20, 70, 14);
+		contentPanel.add(lblNewLabel);
 
 		JLabel label = new JLabel("Редактирование/Добавление");
-		label.setBounds(345, 20, 190, 14);
+		label.setBounds(345, 100, 190, 14);
 		contentPanel.add(label);
 
-		this.comboBox = new JComboBox() {
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public String getToolTipText(MouseEvent e) {
-
-				return comboBox.getSelectedItem().toString();
-			}
-		};
-		this.comboBox.setToolTipText("");
+		this.comboBox = new MyComboBox();
 
 		this.comboBox.setBounds(300, 40, 255, 23);
 		contentPanel.add(this.comboBox);
@@ -149,7 +143,7 @@ public class ServiceEditFormTest extends JDialog {
 					chooseTableByMode();
 					editButton.setVisible(false);
 				} catch (ServiceException ex) {
-					Logger.getLogger(ServiceEditFormTest.class.getName()).log(Level.SEVERE, null, ex);
+					LOGGER.error(ex.getCause().getMessage(), ex);
 					JOptionPane.showMessageDialog(getContentPane(), ex);
 				}
 			}
@@ -188,7 +182,7 @@ public class ServiceEditFormTest extends JDialog {
 					addOrUpdateRecord(ActionMode.Update);
 					chooseTableByMode();
 				} catch (ServiceException ex) {
-					Logger.getLogger(ServiceEditFormTest.class.getName()).log(Level.SEVERE, null, ex);
+					LOGGER.error(ex.getCause().getMessage(), ex);
 					JOptionPane.showMessageDialog(getContentPane(), ex);
 				} finally {
 					editButton.setEnabled(true);
@@ -212,7 +206,7 @@ public class ServiceEditFormTest extends JDialog {
 						chooseTableByMode();
 						editButton.setVisible(false);
 					} catch (ServiceException ex) {
-						Logger.getLogger(ServiceEditFormTest.class.getName()).log(Level.SEVERE, null, ex);
+						LOGGER.error(ex.getCause().getMessage(), ex);
 						JOptionPane.showMessageDialog(getContentPane(), ex);
 					} finally {
 						button2.setEnabled(true);
@@ -222,6 +216,9 @@ public class ServiceEditFormTest extends JDialog {
 		});
 
 		this.table = new JTable() {
+			/**
+			 * 
+			 */
 			private static final long serialVersionUID = 1L;
 
 			// Implement table cell tool tips.
@@ -300,7 +297,7 @@ public class ServiceEditFormTest extends JDialog {
 		IServiceFactory factory = ServiceFactoryProvider.getInstance().getServiceFactory(ServiceFactoryName.CHOKE);
 		//
 		facultiesCollection = factory.getFacultyService().getAllFaculties();
-		final DefaultComboBoxModel<String> model1 = new DefaultComboBoxModel<>(
+		final DefaultComboBoxModel model1 = new DefaultComboBoxModel(
 				GetNamesClass.getFacultiesNames(facultiesCollection));
 		this.comboBox.setModel(model1);
 	}
@@ -455,8 +452,7 @@ public class ServiceEditFormTest extends JDialog {
 															// выбранного
 															// элемента в
 															// ComboBox
-		lecturersCollection = factory.getLecturerService()
-				.getLecturersRecordsByChairId(chairsCollection.get(CB_index));
+		lecturersCollection = factory.getLecturerService().getLecturersRecordsByChairId(chairsCollection.get(CB_index));
 		initTableByLecturers(lecturersCollection);
 	}
 

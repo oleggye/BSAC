@@ -3,6 +3,11 @@ package timetable.view;
 import tableClasses.TablesArray;
 import timetable.view.contoller.CellTableMouseClickedEvent;
 import timetable.view.contoller.ShowBtnActionEvent;
+import timetable.view.extra.ChairEditForm;
+import timetable.view.extra.ClassroomEditForm;
+import timetable.view.extra.EditForm;
+import timetable.view.extra.FacultyEditForm;
+import timetable.view.extra.FlowEditForm;
 import timetable.view.util.FormInitializer;
 import supportClasses.SupportClass;
 
@@ -157,6 +162,16 @@ public class MainForm {
 		});
 		mnNewMenu.add(changeFacultyMenuItem);
 
+		JMenuItem changeFlowMenuItem = new JMenuItem("Редактирование потоков");
+		changeFlowMenuItem.addActionListener((ActionEvent e) -> {
+			FlowEditForm edf = new FlowEditForm();
+			edf.setVisible(true);
+			facultyComboBox.setSelectedIndex(facultyComboBox.getItemCount() - 1 - facultyComboBox.getSelectedIndex());
+			/* очищаем данные во всех таблицах */
+			tableArray.resetAllTablesInArray();
+		});
+		mnNewMenu.add(changeFlowMenuItem);
+
 		JMenuItem changeChairMenuItem = new JMenuItem("Редактирование кафедр");
 		changeChairMenuItem.addActionListener((ActionEvent e) -> {
 			ChairEditForm dialog = new ChairEditForm();
@@ -167,36 +182,36 @@ public class MainForm {
 		});
 		mnNewMenu.add(changeChairMenuItem);
 
-		JMenuItem menuItem = new JMenuItem("Редактирование группы");
-		menuItem.addActionListener((ActionEvent e) -> {
+		JMenuItem changeGroupMenuItem = new JMenuItem("Редактирование группы");
+		changeGroupMenuItem.addActionListener((ActionEvent e) -> {
 			EditForm edf = new EditForm(mainFrame, 1, 2, educationLevel);
 			edf.setVisible(true);
 			facultyComboBox.setSelectedIndex(facultyComboBox.getItemCount() - 1 - facultyComboBox.getSelectedIndex());
 			/* очищаем данные во всех таблицах */
 			tableArray.resetAllTablesInArray();
 		});
-		mnNewMenu.add(menuItem);
+		mnNewMenu.add(changeGroupMenuItem);
 
-		JMenuItem menuItem_1 = new JMenuItem("Редактирование предметов");
-		menuItem_1.addActionListener((ActionEvent e) -> {
+		JMenuItem changeSubjectMenuItem = new JMenuItem("Редактирование предметов");
+		changeSubjectMenuItem.addActionListener((ActionEvent e) -> {
 			EditForm edf = new EditForm(mainFrame, 2, 1, educationLevel);
 			edf.setVisible(true);
 		});
-		mnNewMenu.add(menuItem_1);
+		mnNewMenu.add(changeSubjectMenuItem);
 
-		JMenuItem menuItem_2 = new JMenuItem("Редактирование преподавателей");
-		menuItem_2.addActionListener((ActionEvent e) -> {
+		JMenuItem changeLecturerMenuItem = new JMenuItem("Редактирование преподавателей");
+		changeLecturerMenuItem.addActionListener((ActionEvent e) -> {
 			EditForm edf = new EditForm(mainFrame, 2, 3, educationLevel);
 			edf.setVisible(true);
 		});
-		mnNewMenu.add(menuItem_2);
+		mnNewMenu.add(changeLecturerMenuItem);
 
-		JMenuItem changeClassroomItem = new JMenuItem("Редактирование аудиторий");
-		changeClassroomItem.addActionListener((ActionEvent e) -> {
+		JMenuItem changeClassroomMenuItem = new JMenuItem("Редактирование аудиторий");
+		changeClassroomMenuItem.addActionListener((ActionEvent e) -> {
 			ClassroomEditForm edf = new ClassroomEditForm();
 			edf.setVisible(true);
 		});
-		mnNewMenu.add(changeClassroomItem);
+		mnNewMenu.add(changeClassroomMenuItem);
 
 		JMenu mnNewMenu_1 = new JMenu("О программе");
 		mnNewMenu_1.addMouseListener(new java.awt.event.MouseAdapter() {

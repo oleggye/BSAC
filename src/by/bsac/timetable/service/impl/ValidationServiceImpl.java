@@ -5,6 +5,7 @@ import java.util.Date;
 import by.bsac.timetable.hibernateFiles.entity.Chair;
 import by.bsac.timetable.hibernateFiles.entity.Classroom;
 import by.bsac.timetable.hibernateFiles.entity.Faculty;
+import by.bsac.timetable.hibernateFiles.entity.Flow;
 import by.bsac.timetable.hibernateFiles.entity.Group;
 import by.bsac.timetable.hibernateFiles.entity.Lecturer;
 import by.bsac.timetable.hibernateFiles.entity.Record;
@@ -48,15 +49,15 @@ public class ValidationServiceImpl implements IValidationService {
 		}
 		byte weekNumber = record.getWeekNumber();
 		if (Checker.isWeekNumberInvalid(weekNumber)) {
-			throw new ServiceValidationException("Не верный номер недели: !" + weekNumber);
+			throw new ServiceValidationException("Неверный номер недели: !" + weekNumber);
 		}
 		byte weekDay = record.getWeekDay();
 		if (Checker.isWeekDayInvalid(weekDay)) {
-			throw new ServiceValidationException("Не верный номер дня недели: !" + weekDay);
+			throw new ServiceValidationException("Неверный номер дня недели: !" + weekDay);
 		}
 		byte subjectOrdinalNumber = record.getSubjOrdinalNumber();
 		if (Checker.isSubjectOrdinalNumberInvalid(subjectOrdinalNumber)) {
-			throw new ServiceValidationException("Не верный порядковый номер занятия: !" + subjectOrdinalNumber);
+			throw new ServiceValidationException("Неверный порядковый номер занятия: !" + subjectOrdinalNumber);
 		}
 
 	}
@@ -65,7 +66,7 @@ public class ValidationServiceImpl implements IValidationService {
 	public void validateFaculty(Faculty faculty) throws ServiceValidationException {
 		String name = faculty.getNameFaculty();
 		if (Checker.isNameInvalid(name)) {
-			throw new ServiceValidationException("Не верно заданно название факультета: " + name);
+			throw new ServiceValidationException("Неверно заданно название факультета: " + name);
 		}
 	}
 
@@ -73,7 +74,7 @@ public class ValidationServiceImpl implements IValidationService {
 	public void validateChair(Chair chair) throws ServiceValidationException {
 		String name = chair.getNameChair();
 		if (Checker.isNameInvalid(name)) {
-			throw new ServiceValidationException("Не верно заданно название кафедры: " + name);
+			throw new ServiceValidationException("Неверно заданно название кафедры: " + name);
 		}
 	}
 
@@ -81,11 +82,61 @@ public class ValidationServiceImpl implements IValidationService {
 	public void validateClassroom(Classroom classroom) throws ServiceValidationException {
 		short number = classroom.getNumber();
 		if (Checker.isNumberInvalid(number)) {
-			throw new ServiceValidationException("Не верно задан номер аудитории: " + number);
+			throw new ServiceValidationException("Неверно задан номер аудитории: " + number);
 		}
 		byte building = classroom.getBuilding();
 		if (Checker.isBuildingInvalid(building)) {
-			throw new ServiceValidationException("Не верно задан номер корпуса: " + number);
+			throw new ServiceValidationException("Неверно задан номер корпуса: " + number);
+		}
+	}
+
+	@Override
+	public void validateSubject(Subject subject) throws ServiceValidationException {
+		String name = subject.getNameSubject();
+		if (Checker.isNameInvalid(name)) {
+			throw new ServiceValidationException("Неверное название предмета:" + name);
+		}
+		String abreviationName = subject.getAbnameSubject();
+		if (Checker.isNameInvalid(abreviationName)) {
+			throw new ServiceValidationException("Неверная аббревиатура:" + abreviationName);
+		}
+		byte educationLevel = subject.getEduLevel();
+		if (Checker.isEducationLevelInvalid(educationLevel)) {
+			throw new ServiceValidationException("Задан неверный уровень образования:" + educationLevel);
+		}
+	}
+
+	@Override
+	public void validateLecturer(Lecturer lecturer) throws ServiceValidationException {
+		String name = lecturer.getNameLecturer();
+		if (Checker.isNameInvalid(name)) {
+			throw new ServiceValidationException("Неверное имя преподавателя:" + name);
+		}
+		Chair chair = lecturer.getChair();
+		validateChair(chair);
+	}
+
+	@Override
+	public void validateGroup(Group group) throws ServiceValidationException {
+		String name = group.getNameGroup();
+		if (Checker.isNameInvalid(name)) {
+			throw new ServiceValidationException("Неверное название группы:" + name);
+		}
+		byte educationLevel = group.getEduLevel();
+		if (Checker.isEducationLevelInvalid(educationLevel)) {
+			throw new ServiceValidationException("Задан неверный уровень образования:" + educationLevel);
+		}
+		Faculty faculty = group.getFaculty();
+		validateFaculty(faculty);
+		Flow flow = group.getFlow();
+		validateFlow(flow);
+	}
+
+	@Override
+	public void validateFlow(Flow flow) throws ServiceValidationException {
+		String name = flow.getName();
+		if (Checker.isNameInvalid(name)) {
+			throw new ServiceValidationException("Неверное название потока:" + name);
 		}
 	}
 
@@ -96,6 +147,9 @@ public class ValidationServiceImpl implements IValidationService {
 
 		private static final short LOW_CLASSROOM_NUMBER_BOUND = 0;
 		private static final short TOP_CLASSROOM_NUMBER_BOUND = 500;
+
+		private static final short LOW_EDUCATION_LEVEL_BOUND = 1;
+		private static final short TOP_EDUCATION_LEVEL_BOUND = 2;
 
 		static boolean isDatesInvalid(Date dateFrom, Date dateTo) {
 
@@ -155,6 +209,12 @@ public class ValidationServiceImpl implements IValidationService {
 				return true;
 			return false;
 		}
-	}
 
+		static boolean isEducationLevelInvalid(byte educationLevel) {
+			if (educationLevel < LOW_EDUCATION_LEVEL_BOUND || educationLevel > TOP_EDUCATION_LEVEL_BOUND) {
+				return true;
+			}
+			return false;
+		}
+	}
 }

@@ -615,7 +615,7 @@ public class AddNewRecordForm extends JDialog {
 		} catch (ServiceException e) {
 			Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, e);
 			JOptionPane.showMessageDialog(getContentPane(), e);
-		}finally{
+		} finally {
 			HibernateUtil.closeSession();
 		}
 	}

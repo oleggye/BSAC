@@ -6,11 +6,13 @@ import java.util.List;
 import java.util.ListIterator;
 
 import by.bsac.timetable.hibernateFiles.entity.Faculty;
+import by.bsac.timetable.hibernateFiles.entity.Flow;
 import by.bsac.timetable.hibernateFiles.entity.Group;
 import by.bsac.timetable.hibernateFiles.entity.Subject;
 import by.bsac.timetable.hibernateFiles.entity.builder.GroupBuilder;
 import by.bsac.timetable.service.IGroupService;
 import by.bsac.timetable.service.exception.ServiceException;
+import by.bsac.timetable.service.exception.ServiceValidationException;
 
 public class GroupServiceChoke implements IGroupService {
 
@@ -72,5 +74,11 @@ public class GroupServiceChoke implements IGroupService {
 			record.setEduLevel((byte) eduLevel);
 		}
 		return groupList;
+	}
+
+	@Override
+	public List<Group> getGroupListByFlow(Flow flow) throws ServiceException, ServiceValidationException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

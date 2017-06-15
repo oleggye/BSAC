@@ -71,7 +71,7 @@ public class GroupDAOImpl extends AbstractHibernateDAO<Group> implements IGroupD
 	}
 
 	@Override
-	public List<Group> getGroupByFlow(Flow flow) throws DAOException {
+	public List<Group> getGroupListByFlow(Flow flow) throws DAOException {
 		List<Group> groupsRecords = new ArrayList<>();
 		try {
 			Session session = HibernateUtil.getSession();

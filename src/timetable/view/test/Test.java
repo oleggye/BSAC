@@ -10,7 +10,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.border.EmptyBorder;
 import supportClasses.SupportClass;
-import timetable.view.EditForm;
+import timetable.view.extra.EditForm;
 
 /**
  *
