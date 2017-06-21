@@ -18,4 +18,6 @@ public interface IFlowDAO {
 	public List<Flow> getAll() throws DAOException;
 
 	public void delete(Flow flow) throws DAOException;
+	
+	public List<Flow> getAllWithSimilarName(String nameFlow) throws DAOException;
 }

@@ -15,7 +15,7 @@
             <column name="id_flow" />
         </many-to-one>
         <property name="nameGroup" type="string">
-            <column name="name_group" length="45" not-null="true" />
+            <column name="name_group" length="45" not-null="true" unique="true"/>
         </property>
         <property name="eduLevel" type="byte">
             <column name="edu_level" not-null="true" />

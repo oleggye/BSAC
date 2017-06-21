@@ -13,7 +13,7 @@ public class Faculty implements java.io.Serializable, Cloneable, IName {
 
 	private static final long serialVersionUID = 1L;
 
-	private Byte idFaculty;
+	private short idFaculty;
 	private String nameFaculty;
 	private Set<?> groups = new HashSet<Object>(0);
 
@@ -29,11 +29,11 @@ public class Faculty implements java.io.Serializable, Cloneable, IName {
 		this.groups = groups;
 	}
 
-	public Byte getIdFaculty() {
+	public short getIdFaculty() {
 		return this.idFaculty;
 	}
 
-	public void setIdFaculty(Byte idFaculty) {
+	public void setIdFaculty(short idFaculty) {
 		this.idFaculty = idFaculty;
 	}
 
@@ -67,5 +67,34 @@ public class Faculty implements java.io.Serializable, Cloneable, IName {
 	protected Object clone() throws CloneNotSupportedException {
 		// TODO Auto-generated method stub
 		return super.clone();
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((groups == null) ? 0 : groups.hashCode());
+		result = prime * result + idFaculty;
+		result = prime * result + ((nameFaculty == null) ? 0 : nameFaculty.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Faculty other = (Faculty) obj;
+		if (idFaculty != other.idFaculty)
+			return false;
+		if (nameFaculty == null) {
+			if (other.nameFaculty != null)
+				return false;
+		} else if (!nameFaculty.equals(other.nameFaculty))
+			return false;
+		return true;
 	}
 }

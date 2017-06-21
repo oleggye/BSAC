@@ -4,7 +4,7 @@ import javax.swing.JDialog;
 
 import org.junit.Test;
 
-import timetable.view.FacultyEditForm;
+import by.bsac.timetable.view.extra.FacultyEditForm;
 
 public class FacultyEditFormTest {
 

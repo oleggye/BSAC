@@ -23,4 +23,6 @@ public interface ILecturerDAO {
 	public void delete(Lecturer lecturer) throws DAOException;
 
 	public List<Lecturer> getLecturerListByChair(Chair chair) throws DAOException;
+
+	public List<Lecturer> getAllWithSimilarName(String nameLecturer) throws DAOException;
 }

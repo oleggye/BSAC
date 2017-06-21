@@ -65,4 +65,26 @@ public class Flow implements java.io.Serializable, Cloneable, IName {
 		// TODO Auto-generated method stub
 		return super.clone();
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + idFlow;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Flow other = (Flow) obj;
+		if (idFlow != other.idFlow)
+			return false;
+		return true;
+	}
 }

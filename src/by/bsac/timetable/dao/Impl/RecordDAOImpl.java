@@ -14,6 +14,7 @@ import by.bsac.timetable.dao.exception.DAOException;
 import by.bsac.timetable.hibernateFiles.HibernateUtil;
 import by.bsac.timetable.hibernateFiles.entity.Group;
 import by.bsac.timetable.hibernateFiles.entity.Record;
+import by.bsac.timetable.hibernateFiles.entity.SubjectFor;
 
 public class RecordDAOImpl extends AbstractHibernateDAO<Record> implements IRecordDAO {
 
@@ -54,8 +55,7 @@ public class RecordDAOImpl extends AbstractHibernateDAO<Record> implements IReco
 			SQLQuery sqlQuery = session
 					.createSQLQuery("SELECT *"
 							+ " FROM timetable.cancellation as cancel right join timetable.record as rec using(id_record)"
-							+ " where rec.id_group = ? "
-							+ " and	not((rec.date_to < ?) or (rec.date_from > ?))"
+							+ " where rec.id_group = ? " + " and	not((rec.date_to < ?) or (rec.date_from > ?))"
 							+ " and (cancel.id_record is null or ((cancel.date_to <rec.date_from) or (cancel.date_from > rec.date_to)))")
 					.addEntity(Record.class);
 			sqlQuery.setShort(0, group.getIdGroup());
@@ -98,5 +98,29 @@ public class RecordDAOImpl extends AbstractHibernateDAO<Record> implements IReco
 			HibernateUtil.closeSession();
 		}
 		return likeThisRecord;
+	}
+
+	@Override
+	public List<Record> getRecordListByGroupAndSubjectFor(Group group, SubjectFor subjectFor) throws DAOException {
+
+		List<Record> recordList = new ArrayList<>();
+		try {
+			Session session = HibernateUtil.getSession();
+			HibernateUtil.beginTransaction();
+
+			Criteria criteria = session.createCriteria(Record.class, "record");
+			criteria.add(Restrictions.eq("record.group", group));
+			criteria.add(Restrictions.eq("record.subjectFor", subjectFor));
+			recordList = criteria.list();
+
+			HibernateUtil.commitTransaction();
+
+		} catch (Exception e) {
+			HibernateUtil.rollbackTransaction();
+			throw new DAOException(e.getMessage(), e);
+		} finally {
+			HibernateUtil.closeSession();
+		}
+		return recordList;
 	}
 }

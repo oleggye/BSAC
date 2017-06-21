@@ -7,7 +7,7 @@ import by.bsac.timetable.hibernateFiles.entity.Group;
 import by.bsac.timetable.hibernateFiles.entity.Record;
 import by.bsac.timetable.service.exception.ServiceException;
 import by.bsac.timetable.service.exception.ServiceValidationException;
-import timetable.util.LessonPeriod;
+import by.bsac.timetable.util.LessonPeriod;
 
 public interface IRecordService {
 

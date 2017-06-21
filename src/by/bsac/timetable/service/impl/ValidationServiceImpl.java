@@ -134,9 +134,11 @@ public class ValidationServiceImpl implements IValidationService {
 
 	@Override
 	public void validateFlow(Flow flow) throws ServiceValidationException {
-		String name = flow.getName();
-		if (Checker.isNameInvalid(name)) {
-			throw new ServiceValidationException("Неверное название потока:" + name);
+		if (!Checker.isNull(flow)) {
+			String name = flow.getName();
+			if (Checker.isNameInvalid(name)) {
+				throw new ServiceValidationException("Неверное название потока:" + name);
+			}
 		}
 	}
 

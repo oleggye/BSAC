@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package by.bsac.timetable.service;
 
 import java.util.List;
@@ -21,13 +16,17 @@ public interface IGroupService {
 
 	public Group getGroupById(int group_id) throws ServiceException;
 
-	public List<Group> getAllGroups() throws ServiceException;
+	public List<Group> getGroupList() throws ServiceException;
 
 	public void deleteGroup(Group group) throws ServiceException;
 
-	public List<Group> getGroupsRecordsByFacultyId(Faculty faculty) throws ServiceException;
+	public List<Group> getGroupListByFaculty(Faculty faculty) throws ServiceException;
 
-	public List<Group> getGroupsRecordsByFacultyIdAndEduLevel(Faculty faculty, byte eduLevel) throws ServiceException;
+	public List<Group> getGroupListByFacultyAndEduLevel(Faculty faculty, byte eduLevel) throws ServiceException;
 
 	public List<Group> getGroupListByFlow(Flow flow) throws ServiceException, ServiceValidationException;
+
+	public void changeGroupFlow(Group group, Flow newFlow) throws ServiceException, ServiceValidationException;
+
+	public List<Group> getGroupListByName(String name) throws ServiceException;
 }

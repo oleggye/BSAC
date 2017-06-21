@@ -13,7 +13,7 @@ public class Chair implements java.io.Serializable, Cloneable, IName {
 
 	private static final long serialVersionUID = 1L;
 
-	private Byte idChair;
+	private Short idChair;
 	private String nameChair;
 	private Set<?> lecturers = new HashSet<Object>(0);
 	private Set<?> subjects = new HashSet<Object>(0);
@@ -31,11 +31,11 @@ public class Chair implements java.io.Serializable, Cloneable, IName {
 		this.subjects = subjects;
 	}
 
-	public Byte getIdChair() {
+	public Short getIdChair() {
 		return this.idChair;
 	}
 
-	public void setIdChair(Byte idChair) {
+	public void setIdChair(Short idChair) {
 		this.idChair = idChair;
 	}
 
@@ -92,16 +92,17 @@ public class Chair implements java.io.Serializable, Cloneable, IName {
 				return false;
 		} else if (!idChair.equals(other.idChair))
 			return false;
+		if (nameChair == null) {
+			if (other.nameChair != null)
+				return false;
+		} else if (!nameChair.equals(other.nameChair))
+			return false;
 		// if (lecturers == null) {
 		// if (other.lecturers != null)
 		// return false;
 		// } else if (!lecturers.equals(other.lecturers))
 		// return false;
-		// if (nameChair == null) {
-		// if (other.nameChair != null)
-		// return false;
-		// } else if (!nameChair.equals(other.nameChair))
-		// return false;
+		//
 		return true;
 	}
 }

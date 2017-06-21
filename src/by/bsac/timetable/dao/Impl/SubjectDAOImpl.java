@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 
 import by.bsac.timetable.dao.ISubjectDAO;
@@ -31,13 +33,6 @@ public class SubjectDAOImpl extends AbstractHibernateDAO<Subject> implements ISu
 			criteria.add(Restrictions.eq("subject.chair", chair));
 			subjectList = criteria.list();
 
-			// byte chair_id = chair.getIdChair();
-			// Query query = session
-			// .createQuery("from Subject as sb inner join sb.chair as ch" + "
-			// where ch.idChair =:chair_id")
-			// .setByte("chair_id", chair_id);
-			// subjectList = query.list();
-
 			HibernateUtil.commitTransaction();
 		} catch (Exception e) {
 			HibernateUtil.rollbackTransaction();
@@ -59,16 +54,29 @@ public class SubjectDAOImpl extends AbstractHibernateDAO<Subject> implements ISu
 			criteria.add(Restrictions.eq("eduLevel", eduLevel));
 			subjectList = criteria.list();
 
-			// Byte chair_id = chair.getIdChair();
-			// Query query = session
-			// .createQuery("from Subject as sb inner join sb.chair as ch "
-			// + "where ch.idChair =:chair_id and sb.eduLevel =:edu_level")
-			// .setByte("chair_id", chair_id).setInteger("edu_level", eduLevel);
-			// subjectsRecords = query.list();
-
 			HibernateUtil.commitTransaction();
 		} catch (Exception e) {
 			HibernateUtil.rollbackTransaction();
+			throw new DAOException(e.getMessage(), e);
+		}
+		return subjectList;
+	}
+
+	@Override
+	public List<Subject> getAllWithSimilarName(String nameSubject) throws DAOException {
+		List<Subject> subjectList = new ArrayList<>();
+		try {
+			Session session = HibernateUtil.getSession();
+			HibernateUtil.beginTransaction();
+			Criteria criteria = session.createCriteria(Subject.class, "subject");
+			criteria.add(Restrictions.ilike("subject.nameSubject", nameSubject, MatchMode.START));
+			subjectList = criteria.list();
+			HibernateUtil.commitTransaction();
+
+		} catch (HibernateException e) {
+			HibernateUtil.rollbackTransaction();
+			throw new DAOException(e.getMessage(), e);
+		} catch (Exception e) {
 			throw new DAOException(e.getMessage(), e);
 		}
 		return subjectList;

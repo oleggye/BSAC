@@ -1,11 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package by.bsac.timetable.hibernateFiles;
 
-import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.service.ServiceRegistry;
 
 import by.bsac.timetable.exception.ApplicationException;
 
@@ -13,6 +9,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 /**
  * Hibernate Utility class with a convenient method to get Session Factory
@@ -20,7 +17,6 @@ import org.hibernate.Transaction;
  *
  * @author hello
  */
-@SuppressWarnings("deprecation")
 public class HibernateUtil {
 
 	private static final SessionFactory sessionFactory;
@@ -32,7 +28,12 @@ public class HibernateUtil {
 		try {
 			// Create the SessionFactory from standard (hibernate.cfg.xml)
 			// config file.
-			sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
+			Configuration configuration = new Configuration().configure();
+			ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
+					.applySettings(configuration.getProperties()).build();
+
+			// builds a session factory from the service registry
+			sessionFactory = configuration.buildSessionFactory(serviceRegistry);
 		} catch (Throwable ex) {
 			// Log the exception.
 			System.err.println("Initial SessionFactory creation failed." + ex);

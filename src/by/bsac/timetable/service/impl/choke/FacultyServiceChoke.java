@@ -14,10 +14,10 @@ public class FacultyServiceChoke implements IFacultyService {
 	private static List<Faculty> facultyList = new ArrayList<>();
 
 	static {
-		Faculty faculty1 = new FacultyBuilder().buildId((byte) 1).buildName("Электросвязи").build();
-		Faculty faculty2 = new FacultyBuilder().buildId((byte) 2).buildName("Почта").build();
-		Faculty faculty3 = new FacultyBuilder().buildId((byte) 3).buildName("Что-то еще").build();
-		Faculty faculty4 = new FacultyBuilder().buildId((byte) 4).buildName("Еще что-то").build();
+		Faculty faculty1 = new FacultyBuilder().buildId((short) 1).buildName("Электросвязи").build();
+		Faculty faculty2 = new FacultyBuilder().buildId((short) 2).buildName("Почта").build();
+		Faculty faculty3 = new FacultyBuilder().buildId((short) 3).buildName("Что-то еще").build();
+		Faculty faculty4 = new FacultyBuilder().buildId((short) 4).buildName("Еще что-то").build();
 		facultyList = Arrays.asList(faculty1, faculty2, faculty3, faculty4);
 	}
 

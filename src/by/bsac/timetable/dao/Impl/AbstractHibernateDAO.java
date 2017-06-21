@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
@@ -12,6 +14,7 @@ import by.bsac.timetable.dao.exception.DAOException;
 import by.bsac.timetable.hibernateFiles.HibernateUtil;
 
 public abstract class AbstractHibernateDAO<E> implements IGenericDAO<E> {
+	private static final Logger LOGGER = LogManager.getLogger(AbstractHibernateDAO.class.getName());
 
 	private final Class<E> clazz;
 
@@ -29,8 +32,10 @@ public abstract class AbstractHibernateDAO<E> implements IGenericDAO<E> {
 
 		} catch (HibernateException e) {
 			HibernateUtil.rollbackTransaction();
+			LOGGER.error(e.getMessage(), e);
 			throw new DAOException(e.getMessage(), e);
 		} catch (Exception e) {
+			LOGGER.fatal(e.getMessage(), e);
 			throw new DAOException(e.getMessage(), e);
 		} finally {
 			HibernateUtil.closeSession();
@@ -52,8 +57,10 @@ public abstract class AbstractHibernateDAO<E> implements IGenericDAO<E> {
 
 		} catch (HibernateException e) {
 			HibernateUtil.rollbackTransaction();
+			LOGGER.error(e.getMessage(), e);
 			throw new DAOException(e.getMessage(), e);
 		} catch (Exception e) {
+			LOGGER.fatal(e.getMessage(), e);
 			throw new DAOException(e.getMessage(), e);
 		} finally {
 			HibernateUtil.closeSession();
@@ -71,8 +78,10 @@ public abstract class AbstractHibernateDAO<E> implements IGenericDAO<E> {
 
 		} catch (HibernateException e) {
 			HibernateUtil.rollbackTransaction();
+			LOGGER.error(e.getMessage(), e);
 			throw new DAOException(e.getMessage(), e);
 		} catch (Exception e) {
+			LOGGER.fatal(e.getMessage(), e);
 			throw new DAOException(e.getMessage(), e);
 		}
 		return result;
@@ -90,8 +99,10 @@ public abstract class AbstractHibernateDAO<E> implements IGenericDAO<E> {
 
 		} catch (HibernateException e) {
 			HibernateUtil.rollbackTransaction();
+			LOGGER.error(e.getMessage(), e);
 			throw new DAOException(e.getMessage(), e);
 		} catch (Exception e) {
+			LOGGER.fatal(e.getMessage(), e);
 			throw new DAOException(e.getMessage(), e);
 		}
 		return resultList;
@@ -107,8 +118,10 @@ public abstract class AbstractHibernateDAO<E> implements IGenericDAO<E> {
 
 		} catch (HibernateException e) {
 			HibernateUtil.rollbackTransaction();
+			LOGGER.error(e.getMessage(), e);
 			throw new DAOException(e.getMessage(), e);
 		} catch (Exception e) {
+			LOGGER.fatal(e.getMessage(), e);
 			throw new DAOException(e.getMessage(), e);
 		} finally {
 			HibernateUtil.closeSession();
@@ -130,8 +143,10 @@ public abstract class AbstractHibernateDAO<E> implements IGenericDAO<E> {
 
 		} catch (HibernateException e) {
 			HibernateUtil.rollbackTransaction();
+			LOGGER.error(e.getMessage(), e);
 			throw new DAOException(e.getMessage(), e);
 		} catch (Exception e) {
+			LOGGER.fatal(e.getMessage(), e);
 			throw new DAOException(e.getMessage(), e);
 		} finally {
 			HibernateUtil.closeSession();
@@ -147,9 +162,38 @@ public abstract class AbstractHibernateDAO<E> implements IGenericDAO<E> {
 			HibernateUtil.commitTransaction();
 			session.flush();
 
-		} catch (Exception e) {
+		} catch (HibernateException e) {
 			HibernateUtil.rollbackTransaction();
+			LOGGER.error(e.getMessage(), e);
 			throw new DAOException(e.getMessage(), e);
+		} catch (Exception e) {
+			LOGGER.fatal(e.getMessage(), e);
+			throw new DAOException(e.getMessage(), e);
+		}
+	}
+
+	@Override
+	public void deleteAll(List<E> listObject) throws DAOException {
+		try {
+			Session session = HibernateUtil.getSession();
+			HibernateUtil.beginTransaction();
+
+			Iterator<E> iter = listObject.listIterator();
+			while (iter.hasNext()) {
+				session.delete(iter.next());
+			}
+
+			HibernateUtil.commitTransaction();
+
+		} catch (HibernateException e) {
+			HibernateUtil.rollbackTransaction();
+			LOGGER.error(e.getMessage(), e);
+			throw new DAOException(e.getMessage(), e);
+		} catch (Exception e) {
+			LOGGER.fatal(e.getMessage(), e);
+			throw new DAOException(e.getMessage(), e);
+		} finally {
+			HibernateUtil.closeSession();
 		}
 	}
 }

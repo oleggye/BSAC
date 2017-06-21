@@ -22,8 +22,8 @@ import by.bsac.timetable.hibernateFiles.entity.builder.SubjectTypeBuilder;
 import by.bsac.timetable.service.IRecordService;
 import by.bsac.timetable.service.exception.ServiceException;
 import by.bsac.timetable.service.exception.ServiceValidationException;
+import by.bsac.timetable.util.LessonPeriod;
 import supportClasses.DateUtil;
-import timetable.util.LessonPeriod;
 
 public class RecordServiceChoke implements IRecordService {
 

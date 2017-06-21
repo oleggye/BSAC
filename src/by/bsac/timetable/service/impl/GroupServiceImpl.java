@@ -58,7 +58,7 @@ public class GroupServiceImpl implements IGroupService {
 	}
 
 	@Override
-	public List<Group> getAllGroups() throws ServiceException {
+	public List<Group> getGroupList() throws ServiceException {
 
 		List<Group> groupList = null;
 		DAOFactory factory = DAOFactory.getInstance();
@@ -84,7 +84,7 @@ public class GroupServiceImpl implements IGroupService {
 	}
 
 	@Override
-	public List<Group> getGroupsRecordsByFacultyId(Faculty faculty) throws ServiceException {
+	public List<Group> getGroupListByFaculty(Faculty faculty) throws ServiceException {
 
 		List<Group> groupList = null;
 		DAOFactory factory = DAOFactory.getInstance();
@@ -98,7 +98,7 @@ public class GroupServiceImpl implements IGroupService {
 	}
 
 	@Override
-	public List<Group> getGroupsRecordsByFacultyIdAndEduLevel(Faculty faculty, byte eduLevel) throws ServiceException {
+	public List<Group> getGroupListByFacultyAndEduLevel(Faculty faculty, byte eduLevel) throws ServiceException {
 
 		List<Group> groupList = null;
 		DAOFactory factory = DAOFactory.getInstance();
@@ -123,6 +123,34 @@ public class GroupServiceImpl implements IGroupService {
 			groupList = factory.getGroupDAO().getGroupListByFlow(flow);
 		} catch (DAOException e) {
 			throw new ServiceException("Ошибка при получении списка групп потока", e);
+		}
+		return groupList;
+	}
+
+	@Override
+	public void changeGroupFlow(Group group, Flow newFlow) throws ServiceException, ServiceValidationException {
+		IValidationService service = ServiceFactory.getInstance().getValidationService();
+		service.validateGroup(group);
+		Flow flow = group.getFlow();
+		service.validateFlow(flow);
+
+		DAOFactory factory = DAOFactory.getInstance();
+		try {
+			factory.getGroupDAO().changeGroupFlow(group, newFlow);
+		} catch (DAOException e) {
+			throw new ServiceException("Ошибка при обновлении потока группы", e);
+		}
+	}
+
+	@Override
+	public List<Group> getGroupListByName(String name) throws ServiceException {
+		List<Group> groupList;
+		DAOFactory factory = DAOFactory.getInstance();
+
+		try {
+			groupList = factory.getGroupDAO().getAllWithSimilarName(name);
+		} catch (DAOException e) {
+			throw new ServiceException("Ошибка при получении списка групп", e);
 		}
 		return groupList;
 	}

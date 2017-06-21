@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.Query;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 
 import by.bsac.timetable.dao.ILecturerDAO;
@@ -13,7 +14,6 @@ import by.bsac.timetable.dao.exception.DAOException;
 import by.bsac.timetable.hibernateFiles.HibernateUtil;
 import by.bsac.timetable.hibernateFiles.entity.Chair;
 import by.bsac.timetable.hibernateFiles.entity.Lecturer;
-import by.bsac.timetable.hibernateFiles.entity.Subject;
 
 public class LecturerDAOImpl extends AbstractHibernateDAO<Lecturer> implements ILecturerDAO {
 
@@ -33,17 +33,30 @@ public class LecturerDAOImpl extends AbstractHibernateDAO<Lecturer> implements I
 			criteria.add(Restrictions.eq("lecturer.chair", chair));
 			lecturerList = criteria.list();
 
-			// byte chair_id = chair.getIdChair();
-			// Query query = session
-			// .createQuery("from Lecturer as lc inner join lc.chair as ch" + "
-			// where ch.idChair =:chair_id")
-			// .setByte("chair_id", chair_id);
-			// lecturersRecords = query.list();
-
 			HibernateUtil.commitTransaction();
 
 		} catch (Exception e) {
 			HibernateUtil.rollbackTransaction();
+			throw new DAOException(e.getMessage(), e);
+		}
+		return lecturerList;
+	}
+
+	public List<Lecturer> getAllWithSimilarName(String nameLecturer) throws DAOException {
+
+		List<Lecturer> lecturerList = new ArrayList<>();
+		try {
+			Session session = HibernateUtil.getSession();
+			HibernateUtil.beginTransaction();
+			Criteria criteria = session.createCriteria(Lecturer.class, "lecturer");
+			criteria.add(Restrictions.ilike("lecturer.nameLecturer", nameLecturer, MatchMode.START));
+			lecturerList = criteria.list();
+			HibernateUtil.commitTransaction();
+
+		} catch (HibernateException e) {
+			HibernateUtil.rollbackTransaction();
+			throw new DAOException(e.getMessage(), e);
+		} catch (Exception e) {
 			throw new DAOException(e.getMessage(), e);
 		}
 		return lecturerList;

@@ -77,4 +77,16 @@ public class FlowServiceImpl implements IFlowService {
 			throw new ServiceException("Ошибка при удалении потока", e);
 		}
 	}
+
+	@Override
+	public List<Flow> getFlowListByName(String name) throws ServiceException {
+		DAOFactory factory = DAOFactory.getInstance();
+		List<Flow> flowList;
+		try {
+			flowList = factory.getFlowDAO().getAllWithSimilarName(name);
+		} catch (DAOException e) {
+			throw new ServiceException("Ошибка при получении потоков", e);
+		}
+		return flowList;
+	}
 }

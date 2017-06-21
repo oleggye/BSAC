@@ -4,10 +4,10 @@ import by.bsac.timetable.hibernateFiles.entity.Faculty;
 
 public class FacultyBuilder {
 
-	private byte idFaculty;
+	private short idFaculty;
 	private String nameFaculty;
 
-	public FacultyBuilder buildId(byte idFaculty) {
+	public FacultyBuilder buildId(short idFaculty) {
 		this.idFaculty = idFaculty;
 		return this;
 	}

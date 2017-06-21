@@ -88,4 +88,10 @@ public class SubjectServiceChoke implements ISubjectService {
 		}
 		return subjectList;
 	}
+
+	@Override
+	public List<Subject> getSubjectListByName(String name) throws ServiceException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

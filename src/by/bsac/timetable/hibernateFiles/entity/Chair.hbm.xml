@@ -3,14 +3,14 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated May 15, 2017 12:08:06 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-	<class name="by.bsac.timetable.hibernateFiles.entity.Chair" table="chair" catalog="timetable"
-		optimistic-lock="version">
-		<id name="idChair" type="java.lang.Byte">
+	<class name="by.bsac.timetable.hibernateFiles.entity.Chair"
+		table="chair" catalog="timetable" optimistic-lock="version">
+		<id name="idChair" type="java.lang.Short">
 			<column name="id_chair" />
 			<generator class="identity" />
 		</id>
 		<property name="nameChair" type="string">
-			<column name="name_chair" length="70" not-null="true" />
+			<column name="name_chair" length="70" not-null="true" unique="true" />
 		</property>
 		<set name="lecturers" table="lecturer" inverse="true" lazy="true"
 			fetch="select">

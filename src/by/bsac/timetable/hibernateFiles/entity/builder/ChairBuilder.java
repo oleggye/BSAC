@@ -4,10 +4,10 @@ import by.bsac.timetable.hibernateFiles.entity.Chair;
 
 public class ChairBuilder {
 
-	private byte idChair;
+	private short idChair;
 	private String nameChair;
 
-	public ChairBuilder buildId(byte idChair) {
+	public ChairBuilder buildId(short idChair) {
 		this.idChair = idChair;
 		return this;
 	}

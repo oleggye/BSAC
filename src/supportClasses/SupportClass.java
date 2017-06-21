@@ -2,7 +2,9 @@ package supportClasses;
 
 import tableClasses.TablesArray;
 import tableClasses.ArrayPosition;
+import tableClasses.MyMultiSpanCellTable;
 
+import java.awt.Color;
 import java.awt.Window;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -17,19 +19,26 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import by.bsac.timetable.hibernateFiles.entity.Group;
 import by.bsac.timetable.hibernateFiles.entity.Lecturer;
 import by.bsac.timetable.hibernateFiles.entity.Record;
 import by.bsac.timetable.hibernateFiles.entity.Subject;
 import by.bsac.timetable.hibernateFiles.entity.SubjectFor;
 import by.bsac.timetable.service.exception.ServiceException;
+import by.bsac.timetable.service.exception.ServiceValidationException;
 import by.bsac.timetable.service.factory.impl.ServiceFactory;
-import timetable.view.MainForm;
+import by.bsac.timetable.view.MainForm;
 
 public class SupportClass {
 
+	private static final Logger LOGGER = LogManager.getLogger(SupportClass.class.getName());
+
 	private static final int LENGTHFORWORD = 10;
 	private static final int LENGTHOFI = 1;
+	private static final Color DEFAULT_GRID_COLOR = new Color(122, 138, 153);
 
 	public final static void setColumnsWidth(JTable table) {
 
@@ -95,6 +104,10 @@ public class SupportClass {
 		frame.setLocation(dim.width / 2 - frame.getWidth() / 2, dim.height / 2 - frame.getHeight() / 2);
 	}
 
+	public static void relativeFormCentering(Window parent, Window frame) {
+		frame.setLocationRelativeTo(parent);
+	}
+
 	public static List<Record> findMainRecordsByCriterias(List<Record> mainRecordsCollection, byte currentWeekDay,
 			byte currentWeekNumber, byte currentSubjOrdinalNumber) {
 		List<Record> tempArray = new LinkedList<>();
@@ -116,7 +129,10 @@ public class SupportClass {
 																// таблицы в
 																// двумерном
 																// массиве
-				tablesArray.getElementAt(i, j).setModelForTable(mainRecordsCollection, arrPos);
+				MyMultiSpanCellTable table = tablesArray.getElementAt(i, j);
+				table.setModelForTable(mainRecordsCollection, arrPos);
+				// устанавливаем цвет рамки
+				table.setGridColor(DEFAULT_GRID_COLOR);
 
 			}
 		}
@@ -325,8 +341,8 @@ public class SupportClass {
 			}
 			try {
 				ServiceFactory.getInstance().getSubjectService().updateSubject(subjCol.get(i));
-			} catch (ServiceException e) {
-				e.printStackTrace();
+			} catch (ServiceException | ServiceValidationException e) {
+				LOGGER.error(e.getCause().getMessage(), e);
 			}
 		}
 		return subjCol;

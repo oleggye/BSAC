@@ -11,6 +11,7 @@ import by.bsac.timetable.hibernateFiles.entity.Record;
 import by.bsac.timetable.hibernateFiles.entity.builder.LecturerBuilder;
 import by.bsac.timetable.service.ILecturerService;
 import by.bsac.timetable.service.exception.ServiceException;
+import by.bsac.timetable.service.exception.ServiceValidationException;
 
 public class LecturerServiceChoke implements ILecturerService {
 
@@ -73,5 +74,11 @@ public class LecturerServiceChoke implements ILecturerService {
 			record.setChair(chair);
 		}
 		return lecturerList;
+	}
+
+	@Override
+	public List<Lecturer> getLecturerListByName(String name) throws ServiceException, ServiceValidationException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

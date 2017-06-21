@@ -13,7 +13,7 @@ import by.bsac.timetable.service.exception.ServiceValidationException;
 import by.bsac.timetable.service.factory.IServiceFactory;
 import by.bsac.timetable.service.factory.ServiceFactoryName;
 import by.bsac.timetable.service.factory.ServiceFactoryProvider;
-import timetable.util.WeekNumber;
+import by.bsac.timetable.util.WeekNumber;
 
 public class AddRecord implements ICommand {
 

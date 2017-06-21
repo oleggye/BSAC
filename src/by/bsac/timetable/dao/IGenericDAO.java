@@ -19,4 +19,6 @@ public interface IGenericDAO<E> {
 	public E getById(Number id) throws DAOException;
 
 	public List<E> getAll() throws DAOException;
+
+	void deleteAll(List<E> listObject) throws DAOException;
 }

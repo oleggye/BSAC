@@ -45,7 +45,7 @@ public class GroupServiceChoke implements IGroupService {
 	}
 
 	@Override
-	public List<Group> getAllGroups() throws ServiceException {
+	public List<Group> getGroupList() throws ServiceException {
 		return groupList;
 	}
 
@@ -56,7 +56,7 @@ public class GroupServiceChoke implements IGroupService {
 	}
 
 	@Override
-	public List<Group> getGroupsRecordsByFacultyId(Faculty faculty) throws ServiceException {
+	public List<Group> getGroupListByFaculty(Faculty faculty) throws ServiceException {
 		ListIterator<Group> iterator = groupList.listIterator();
 		while (iterator.hasNext()) {
 			Group record = iterator.next();
@@ -66,7 +66,7 @@ public class GroupServiceChoke implements IGroupService {
 	}
 
 	@Override
-	public List<Group> getGroupsRecordsByFacultyIdAndEduLevel(Faculty faculty, byte eduLevel) throws ServiceException {
+	public List<Group> getGroupListByFacultyAndEduLevel(Faculty faculty, byte eduLevel) throws ServiceException {
 		ListIterator<Group> iterator = groupList.listIterator();
 		while (iterator.hasNext()) {
 			Group record = iterator.next();
@@ -78,6 +78,18 @@ public class GroupServiceChoke implements IGroupService {
 
 	@Override
 	public List<Group> getGroupListByFlow(Flow flow) throws ServiceException, ServiceValidationException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void changeGroupFlow(Group group, Flow newFlow) throws ServiceException, ServiceValidationException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public List<Group> getGroupListByName(String name) throws ServiceException {
 		// TODO Auto-generated method stub
 		return null;
 	}

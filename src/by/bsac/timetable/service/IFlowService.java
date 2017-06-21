@@ -18,4 +18,5 @@ public interface IFlowService {
 
 	public void deleteFlow(Flow flow) throws ServiceException, ServiceValidationException;
 
+	public List<Flow> getFlowListByName(String name) throws ServiceException;
 }

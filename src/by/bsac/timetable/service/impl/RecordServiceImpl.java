@@ -14,9 +14,9 @@ import by.bsac.timetable.service.IValidationService;
 import by.bsac.timetable.service.exception.ServiceException;
 import by.bsac.timetable.service.exception.ServiceValidationException;
 import by.bsac.timetable.service.factory.impl.ServiceFactory;
+import by.bsac.timetable.util.LessonFor;
+import by.bsac.timetable.util.LessonPeriod;
 import supportClasses.DateUtil;
-import timetable.util.LessonFor;
-import timetable.util.LessonPeriod;
 
 public class RecordServiceImpl implements IRecordService {
 

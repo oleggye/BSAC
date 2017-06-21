@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package by.bsac.timetable.service.impl;
 
 import java.util.List;
@@ -12,12 +7,17 @@ import by.bsac.timetable.dao.factory.DAOFactory;
 import by.bsac.timetable.hibernateFiles.entity.Chair;
 import by.bsac.timetable.hibernateFiles.entity.Lecturer;
 import by.bsac.timetable.service.ILecturerService;
+import by.bsac.timetable.service.IValidationService;
 import by.bsac.timetable.service.exception.ServiceException;
+import by.bsac.timetable.service.exception.ServiceValidationException;
+import by.bsac.timetable.service.factory.impl.ServiceFactory;
 
 public class LecturerServiceImpl implements ILecturerService {
 
 	@Override
-	public void addLecturer(Lecturer lecturer) throws ServiceException {
+	public void addLecturer(Lecturer lecturer) throws ServiceException, ServiceValidationException {
+		IValidationService service = ServiceFactory.getInstance().getValidationService();
+		service.validateLecturer(lecturer);
 
 		DAOFactory factory = DAOFactory.getInstance();
 
@@ -29,7 +29,9 @@ public class LecturerServiceImpl implements ILecturerService {
 	}
 
 	@Override
-	public void updateLecturer(Lecturer lecturer) throws ServiceException {
+	public void updateLecturer(Lecturer lecturer) throws ServiceException, ServiceValidationException {
+		IValidationService service = ServiceFactory.getInstance().getValidationService();
+		service.validateLecturer(lecturer);
 
 		DAOFactory factory = DAOFactory.getInstance();
 
@@ -88,6 +90,21 @@ public class LecturerServiceImpl implements ILecturerService {
 
 		try {
 			lecturerList = factory.getLecturerDAO().getLecturerListByChair(chair);
+		} catch (DAOException e) {
+			throw new ServiceException("Ошибка при получении преподавателей", e);
+		}
+		return lecturerList;
+	}
+
+	@Override
+	public List<Lecturer> getLecturerListByName(String nameLecturer)
+			throws ServiceException, ServiceValidationException {
+
+		List<Lecturer> lecturerList = null;
+		DAOFactory factory = DAOFactory.getInstance();
+
+		try {
+			lecturerList = factory.getLecturerDAO().getAllWithSimilarName(nameLecturer);
 		} catch (DAOException e) {
 			throw new ServiceException("Ошибка при получении преподавателей", e);
 		}

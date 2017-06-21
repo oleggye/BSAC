@@ -8,11 +8,11 @@ import by.bsac.timetable.hibernateFiles.entity.Cancellation;
 public interface ICancellationDAO {
 
 	public void add(Cancellation object) throws DAOException;
-	
+
 	public void addAll(List<Cancellation> listCancellation) throws DAOException;
 
 	public void update(Cancellation object) throws DAOException;
-	
+
 	public void updateAll(List<Cancellation> listCancellation) throws DAOException;
 
 	public void delete(Cancellation object) throws DAOException;

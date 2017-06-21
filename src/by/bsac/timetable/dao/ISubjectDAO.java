@@ -25,4 +25,6 @@ public interface ISubjectDAO {
 	public List<Subject> getSubjectListByChair(Chair chair) throws DAOException;
 
 	public List<Subject> getSubjectListByChairAndEduLevel(Chair chair, byte eduLevel) throws DAOException;
+
+	public List<Subject> getAllWithSimilarName(String nameSubject) throws DAOException;
 }

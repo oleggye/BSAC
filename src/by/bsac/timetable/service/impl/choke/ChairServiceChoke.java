@@ -14,13 +14,13 @@ public class ChairServiceChoke implements IChairService {
 
 	static {
 		Chair chair1 = new Chair();
-		chair1.setIdChair((byte) 1);
+		chair1.setIdChair((short) 1);
 		chair1.setNameChair("ПОСТ");
 		Chair chair2 = new Chair();
-		chair2.setIdChair((byte) 2);
+		chair2.setIdChair((short) 2);
 		chair2.setNameChair("Еще какая-то");
 		Chair chair3 = new Chair();
-		chair3.setIdChair((byte) 3);
+		chair3.setIdChair((short) 3);
 		chair3.setNameChair("Тоже типо кафедра");
 
 		chairList = Arrays.asList(chair1, chair2, chair3);

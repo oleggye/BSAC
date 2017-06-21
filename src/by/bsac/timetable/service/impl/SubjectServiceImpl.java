@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package by.bsac.timetable.service.impl;
 
 import java.util.List;
@@ -12,12 +7,17 @@ import by.bsac.timetable.dao.factory.DAOFactory;
 import by.bsac.timetable.hibernateFiles.entity.Chair;
 import by.bsac.timetable.hibernateFiles.entity.Subject;
 import by.bsac.timetable.service.ISubjectService;
+import by.bsac.timetable.service.IValidationService;
 import by.bsac.timetable.service.exception.ServiceException;
+import by.bsac.timetable.service.exception.ServiceValidationException;
+import by.bsac.timetable.service.factory.impl.ServiceFactory;
 
 public class SubjectServiceImpl implements ISubjectService {
 
 	@Override
-	public void addSubject(Subject subject) throws ServiceException {
+	public void addSubject(Subject subject) throws ServiceException, ServiceValidationException {
+		IValidationService service = ServiceFactory.getInstance().getValidationService();
+		service.validateSubject(subject);
 
 		DAOFactory factory = DAOFactory.getInstance();
 
@@ -29,7 +29,9 @@ public class SubjectServiceImpl implements ISubjectService {
 	}
 
 	@Override
-	public void updateSubject(Subject subject) throws ServiceException {
+	public void updateSubject(Subject subject) throws ServiceException, ServiceValidationException {
+		IValidationService service = ServiceFactory.getInstance().getValidationService();
+		service.validateSubject(subject);
 
 		DAOFactory factory = DAOFactory.getInstance();
 
@@ -106,5 +108,18 @@ public class SubjectServiceImpl implements ISubjectService {
 			throw new ServiceException("Ошибка при получении предметов кафедры для уровня образования", e);
 		}
 		return subjectList;
+	}
+
+	@Override
+	public List<Subject> getSubjectListByName(String name) throws ServiceException {
+		List<Subject> groupList;
+		DAOFactory factory = DAOFactory.getInstance();
+
+		try {
+			groupList = factory.getSubjectDAO().getAllWithSimilarName(name);
+		} catch (DAOException e) {
+			throw new ServiceException("Ошибка при получении списка групп", e);
+		}
+		return groupList;
 	}
 }
