@@ -1,5 +1,7 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+#Java files
+*.jar
 
 # Custom for Visual Studio
 *.cs     diff=csharp
